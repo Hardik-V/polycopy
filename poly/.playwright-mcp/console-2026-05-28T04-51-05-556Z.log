@@ -1,0 +1,12 @@
+[     720ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://poly.app/_payload.json?cde93b1a-a907-400e-86a5-25a2e64a3730:0
+[     897ms] [WARNING] [nuxt] Cannot load payload  /_payload.json?cde93b1a-a907-400e-86a5-25a2e64a3730 SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+    at JSON.parse (<anonymous>)
+    at nP (https://poly.app/_nuxt/DjHT9nKP.js:19:33535)
+    at zb (https://poly.app/_nuxt/DjHT9nKP.js:19:51081)
+    at async Qb (https://poly.app/_nuxt/DjHT9nKP.js:19:50484)
+    at async LP (https://poly.app/_nuxt/DjHT9nKP.js:19:50913)
+    at async setup (https://poly.app/_nuxt/DjHT9nKP.js:19:51570)
+    at async PL (https://poly.app/_nuxt/DjHT9nKP.js:19:27193)
+    at async a (https://poly.app/_nuxt/DjHT9nKP.js:19:27728)
+    at async UL (https://poly.app/_nuxt/DjHT9nKP.js:19:27779)
+    at async kC (https://poly.app/_nuxt/DjHT9nKP.js:10442:41058) @ https://poly.app/_nuxt/DjHT9nKP.js:18
