@@ -188,6 +188,15 @@ def add_perimeter_dots(radius: float, dot_r: float, z: float, count: int = 36):
 
 
 def make_gold_material(name: str = "Gold") -> bpy.types.Material:
+    """Pure-diffuse gold for the albedo bake.
+
+    Lambertian shader, no metallic, no specular, no anisotropy. Under a
+    uniform white dome this gives a near-constant base colour on flat
+    surfaces; recessed areas darken via ambient occlusion only. The
+    engine's runtime shader later adds metallic specular based on the
+    real camera + light positions, so highlights move correctly with the
+    view instead of being locked into the texture.
+    """
     mat = bpy.data.materials.new(name=name)
     mat.use_nodes = True
     nt = mat.node_tree
@@ -197,29 +206,12 @@ def make_gold_material(name: str = "Gold") -> bpy.types.Material:
     out = nt.nodes.new("ShaderNodeOutputMaterial")
     out.location = (400, 0)
 
-    bsdf = nt.nodes.new("ShaderNodeBsdfPrincipled")
-    bsdf.location = (0, 0)
-    bsdf.inputs["Base Color"].default_value = (0.88, 0.46, 0.05, 1.0)
-    bsdf.inputs["Metallic"].default_value = 1.0
-    bsdf.inputs["Roughness"].default_value = 0.34
-    bsdf.inputs["IOR"].default_value = 1.45
+    diffuse = nt.nodes.new("ShaderNodeBsdfDiffuse")
+    diffuse.location = (0, 0)
+    diffuse.inputs["Color"].default_value = (0.78, 0.42, 0.04, 1.0)
+    diffuse.inputs["Roughness"].default_value = 0.0
 
-    if "Anisotropic" in bsdf.inputs:
-        bsdf.inputs["Anisotropic"].default_value = 0.20
-
-    noise = nt.nodes.new("ShaderNodeTexNoise")
-    noise.location = (-600, -200)
-    noise.inputs["Scale"].default_value = 280.0
-    noise.inputs["Detail"].default_value = 5.0
-    noise.inputs["Roughness"].default_value = 0.55
-
-    bump = nt.nodes.new("ShaderNodeBump")
-    bump.location = (-300, -200)
-    bump.inputs["Strength"].default_value = 0.06
-    nt.links.new(noise.outputs["Fac"], bump.inputs["Height"])
-    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
-
-    nt.links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
+    nt.links.new(diffuse.outputs["BSDF"], out.inputs["Surface"])
     return mat
 
 
@@ -283,28 +275,19 @@ def add_backdrop(extent: float, z: float = -0.0005) -> bpy.types.Object:
 
 
 def setup_lights() -> None:
-    """Studio softbox rig + warm sky dome.
+    """Uniform dome lighting only - no directional shadows.
 
-    Energies and distances are tuned for an 18mm coin viewed top-down.
-    Light intensity falls off as 1/r^2, so the small scale needs much
-    lower wattage than typical product renders. Film exposure is reduced
-    to keep the gold from blowing out.
+    Why: the engine applies its OWN dynamic lighting based on the runtime
+    camera + scene lights. If we bake directional highlights / shadows into
+    the diffuse, those highlights stay locked in texture space and look
+    wrong every time the coin tilts or flips.
+
+    Strategy: render the diffuse as pure albedo + ambient occlusion. A
+    uniform white world dome gives even illumination from every direction;
+    the recessed H and ring grooves produce darker AO areas that read as
+    relief from any angle. Engine lights then add real specular / shading
+    on top in real time.
     """
-    for (name, energy, size, loc, rot, colour) in [
-        ("KeyLight",   18.0, 0.40, ( 0.30,  0.20, 0.50), (math.radians(-25), math.radians( 30), 0), (1.0, 0.96, 0.88)),
-        ("FillLight",   8.0, 0.60, (-0.40, -0.10, 0.45), (math.radians( 20), math.radians(-30), 0), (1.0, 0.98, 0.92)),
-        ("RimLight",   12.0, 0.30, ( 0.00,  0.50, 0.40), (math.radians(-55), 0, 0),                  (1.0, 0.92, 0.78)),
-        ("TopGlow",     6.0, 0.80, ( 0.00,  0.00, 0.80), (0, 0, 0),                                  (1.0, 0.97, 0.90)),
-    ]:
-        l = bpy.data.lights.new(name=name, type="AREA")
-        l.size = size
-        l.energy = energy
-        l.color = colour
-        obj = bpy.data.objects.new(name, l)
-        obj.location = loc
-        obj.rotation_euler = rot
-        bpy.context.scene.collection.objects.link(obj)
-
     world = bpy.data.worlds.get("World") or bpy.data.worlds.new("World")
     world.use_nodes = True
     bpy.context.scene.world = world
@@ -312,22 +295,13 @@ def setup_lights() -> None:
         world.node_tree.nodes.remove(n)
     out_w = world.node_tree.nodes.new("ShaderNodeOutputWorld")
     bg = world.node_tree.nodes.new("ShaderNodeBackground")
-    grad = world.node_tree.nodes.new("ShaderNodeTexGradient")
-    coord = world.node_tree.nodes.new("ShaderNodeTexCoord")
-    ramp = world.node_tree.nodes.new("ShaderNodeValToRGB")
-    ramp.color_ramp.elements[0].position = 0.0
-    ramp.color_ramp.elements[0].color = (0.02, 0.02, 0.03, 1.0)
-    ramp.color_ramp.elements[1].position = 1.0
-    ramp.color_ramp.elements[1].color = (0.25, 0.22, 0.18, 1.0)
-    world.node_tree.links.new(coord.outputs["Generated"], grad.inputs["Vector"])
-    world.node_tree.links.new(grad.outputs["Fac"], ramp.inputs["Fac"])
-    world.node_tree.links.new(ramp.outputs["Color"], bg.inputs["Color"])
-    bg.inputs["Strength"].default_value = 0.6
+    bg.inputs["Color"].default_value = (1.0, 1.0, 1.0, 1.0)
+    bg.inputs["Strength"].default_value = 1.0
     world.node_tree.links.new(bg.outputs["Background"], out_w.inputs["Surface"])
 
     bpy.context.scene.view_settings.view_transform = "Standard"
     bpy.context.scene.view_settings.look = "None"
-    bpy.context.scene.view_settings.exposure = -2.4
+    bpy.context.scene.view_settings.exposure = 0.0
     bpy.context.scene.view_settings.gamma = 1.0
 
 
@@ -337,6 +311,10 @@ def configure_render(res: int, samples: int) -> None:
     s.cycles.device = "CPU"
     s.cycles.samples = samples
     s.cycles.use_denoising = True
+    s.cycles.max_bounces = 8
+    s.cycles.diffuse_bounces = 4
+    s.cycles.glossy_bounces = 0
+    s.cycles.transmission_bounces = 0
     s.render.resolution_x = res
     s.render.resolution_y = res
     s.render.resolution_percentage = 100

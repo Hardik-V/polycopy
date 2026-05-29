@@ -20,9 +20,9 @@ SRC_DIR = Path("tools/out")
 DST_DIR = Path("public/textures/coaster")
 BACKUP_SUFFIX = ".original.webp"
 
-DIFF_SATURATION = 1.45
-DIFF_CONTRAST = 1.20
-DIFF_BRIGHTNESS = 0.92
+DIFF_SATURATION = 1.20
+DIFF_CONTRAST = 1.06
+DIFF_BRIGHTNESS = 1.00
 
 TARGETS = [
     ("coin_DIFF.png",   "DIFF.webp",   95, True),
@@ -62,7 +62,7 @@ def main() -> None:
             shutil.copy2(dst, backup)
             print(f"backup -> {backup}")
 
-        bg = (10, 7, 4) if "DIFF" in dst_name else (128, 128, 128)
+        bg = (170, 90, 20) if "DIFF" in dst_name else (128, 128, 128)
         flat = composite_on(src, bg)
         if punch:
             flat = colour_punch(flat)
