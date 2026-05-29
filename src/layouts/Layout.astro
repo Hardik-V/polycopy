@@ -1,0 +1,68 @@
+---
+// Layout.astro
+// Provides the <html> + <head> shell only.
+// The body structure is owned entirely by index.astro so the JS engine gets
+// the exact DOM it expects without any extra wrapper divs.
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "ORYZO AI",
+  description = "A physical product, reimagined for the AI era, proving even the smallest idea can feel extraordinary.",
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    <title>{title}</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content={description} />
+    <meta name="author" content="Lusion" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#000000" />
+
+    <link rel="canonical" href="https://oryzo.ai/" />
+    <base href="/" />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="/meta/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/meta/favicon.svg" />
+    <link rel="shortcut icon" href="/meta/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/meta/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="ORYZO AI" />
+    <link rel="manifest" href="/meta/site.webmanifest" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://oryzo.ai/meta/og_image.png" />
+    <meta property="og:url" content="https://oryzo.ai/" />
+    <meta property="og:site_name" content="ORYZO AI" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://oryzo.ai/meta/og_image.png" />
+
+    <!-- Cloudflare analytics -->
+    <script
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "e27ebb13e57844bda192b8b623d1c494"}'
+    ></script>
+
+    <!-- The original bundled CSS & hoisted JS — Astro will fingerprint these
+         automatically once integrated; for now we reference the originals. -->
+    <link rel="stylesheet" href="/scripts/index.css" />
+    <script type="module" src="/scripts/main.js"></script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

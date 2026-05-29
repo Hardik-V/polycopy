@@ -1,0 +1,60 @@
+---
+// Hero.astro
+// Section id: #hero
+// The JS engine binds animations to: #hero, #hero-top, #hero-top-tagline,
+// #hero-logo-ref, #hero-copy, #hero-card, #hero-card-inner, #hero-card-header,
+// #hero-card-desc, #hero-video-wrapper, #hero-video-thumbnail-wrapper,
+// #hero-video-thumbnail, #hero-video-play.
+// All ids, classes, and data-* attributes are verbatim.
+// Copy has been rewritten for a Financial Sentiment Visualiser product.
+---
+
+<div id="hero" class="section">
+  <div class="section__inner o-container">
+
+    <!-- Top bar: tagline + logo anchor (JS inserts the animated logo here) -->
+    <div id="hero-top" class="sub1">
+      <div id="hero-top-tagline">Made for markets. Built for microseconds.</div>
+      <div id="hero-logo-ref"></div>
+    </div>
+
+    <!-- Hero body copy -->
+    <div id="hero-copy" class="body1">
+      Engineered to ingest, score, and surface sentiment signals in all the right ways.
+      Sentient makes the noisiest data stream feel considered.
+    </div>
+
+    <!-- Pull-quote card — JS drives the parallax on #hero-card-inner -->
+    <div id="hero-card">
+      <div id="hero-card-inner">
+        <h4 id="hero-card-header">
+          Designed<br> by Lusion,<br> the award-winning<br> design studio.
+        </h4>
+        <div class="o-dashline desktop-only"></div>
+        <div id="hero-card-desc" class="body2">
+          <span>The world's most</span>
+          <span> unnecessarily</span>
+          <span> sophisticated sentiment engine.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Video thumbnail / play trigger -->
+    <div id="hero-video-wrapper">
+      <span class="hero-video__glow"></span>
+      <span class="hero-video__border"></span>
+      <div id="hero-video-thumbnail-wrapper">
+        <img
+          id="hero-video-thumbnail"
+          width="320"
+          height="180"
+          src="/images/video_thumb.webp"
+          fetchpriority="high"
+          alt="Sentient demo video thumbnail"
+        >
+      </div>
+      <div id="hero-video-play">PLAY</div>
+    </div>
+
+  </div>
+</div>

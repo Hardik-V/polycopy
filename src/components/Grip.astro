@@ -1,0 +1,63 @@
+---
+// Grip.astro
+// Section id: #grip
+// JS binds to: #grip-header, #grip-tagline, #grip-title, #grip-desc,
+// #grip-zoom-box, #grip-zoom-box__inner, #grip-zoom-box__image,
+// #grip-zoom-box__content, #grip-zoom-box__content-bg,
+// #grip-zoom-box__content-label, #grip-zoom-box__content-coeff,
+// #grip-instruction, #grip-instruction-wheel, #grip-instruction-wheel-circle,
+// #grip-instruction-icon.
+// All ids, classes, and data-* attributes are preserved verbatim.
+---
+
+<div id="grip" class="section">
+  <div class="section__inner o-container">
+
+    <div id="grip-header">
+      <div id="grip-tagline" class="sub1">Precision Grip, Zero Drama</div>
+      <h2 id="grip-title">Grip-locked Antislip<br />technology</h2>
+      <div id="grip-desc" class="body2">
+        Micro-textured cork so grippy your drink files <br />a restraining order against gravity. Spills?
+        <br />Consider them politely discouraged.
+      </div>
+    </div>
+
+    <!-- Zoom / magnifier interactive box — JS renders texture inside __image -->
+    <div id="grip-zoom-box" class="sub2 prevent-select">
+      <div id="grip-zoom-box__inner">
+        <div id="grip-zoom-box__image"></div>
+        <div id="grip-zoom-box__content">
+          <div id="grip-zoom-box__content-bg"></div>
+          <div id="grip-zoom-box__content-label">Friction coefficient (est):</div>
+          <div id="grip-zoom-box__content-coeff">0.80</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll-wheel instruction graphic — JS rotates the circle on scroll -->
+    <div id="grip-instruction">
+      <svg id="grip-instruction-wheel" viewBox="0 0 100 15">
+        <path
+          fill="none"
+          stroke="currentColor"
+          stroke-width="0.25"
+          d="M50,12.125c32,0,50,-8.5,50,-10"
+          stroke-dasharray="1 1"
+        ></path>
+        <path
+          fill="none"
+          stroke="currentColor"
+          stroke-width="0.25"
+          d="M50,12.125c-32,0,-50,-8.5,-50,-10"
+          stroke-dasharray="1 1"
+        ></path>
+        <circle cx="50" cy="12.125" r="0.8" fill="currentColor"></circle>
+        <circle id="grip-instruction-wheel-circle" cx="50" cy="12.125" r="1.8" fill="currentColor"></circle>
+      </svg>
+      <svg id="grip-instruction-icon">
+        <use href="#hand-tmpl"></use>
+      </svg>
+    </div>
+
+  </div>
+</div>

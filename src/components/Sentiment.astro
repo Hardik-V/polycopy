@@ -1,0 +1,42 @@
+---
+// Sentiment.astro  (maps to the original #encryption section)
+// JS binds to: #encryption, #encryption-main, #encryption-header,
+// #encryption-tagline, #encryption-title, #encryption-desc,
+// #encryption-field, .encryption-field-line, #encryption-field-input,
+// #encryption-field-flip-btn, #encryption-field-flip-btn-inner,
+// .is-flipper-target (both spans inside the button).
+// All ids, classes, and data-* attributes are preserved verbatim.
+---
+
+<div id="encryption" class="section">
+  <div class="section__inner o-container">
+    <div id="encryption-main">
+
+      <div id="encryption-header">
+        <div id="encryption-tagline" class="sub1">Secure communications simplified</div>
+        <h2 id="encryption-title">Smart flip <br />encryption</h2>
+        <div id="encryption-desc" class="body2">
+          Write a message. Flip. Instantly secure — until <br />someone flips it back. Genius.
+        </div>
+      </div>
+
+      <!-- Input field — four decorative line divs + the real <input> -->
+      <div id="encryption-field">
+        <div class="encryption-field-line"></div>
+        <div class="encryption-field-line"></div>
+        <div class="encryption-field-line"></div>
+        <div class="encryption-field-line"></div>
+        <input type="text" id="encryption-field-input" value="ORYZO" maxlength="10" />
+      </div>
+
+      <!-- Flip button — is-flipper + two is-flipper-target spans toggled by JS -->
+      <button id="encryption-field-flip-btn" class="btn is-active is-flipper">
+        <span id="encryption-field-flip-btn-inner">
+          <span class="is-flipper-target">Encode Message</span>
+          <span class="is-flipper-target">Decode Message</span>
+        </span>
+      </button>
+
+    </div>
+  </div>
+</div>

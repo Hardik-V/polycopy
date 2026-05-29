@@ -1,0 +1,91 @@
+---
+// Header.astro
+// Contains: #site-header (nav), mobile menu, and the #site-footer scroll indicator.
+// All ids, classes, and data-* attributes are preserved verbatim — the JS engine
+// queries them by exact string match.
+---
+
+<!-- ─── Site Header ──────────────────────────────────────────────────────── -->
+<header id="site-header" class="link-header">
+
+  <!-- Logo — links back to #hero, data-width drives the JS resize logic -->
+  <a id="site-header-logo" data-width="94" href="#hero">
+    <div>
+      <svg viewBox="0 0 94 21">
+        <use href="#logo-tmpl"></use>
+      </svg>
+    </div>
+  </a>
+
+  <!-- Desktop nav -->
+  <nav id="site-header-nav" class="desktop-only">
+    <ul>
+      <li class="is-flipper" data-id="hero">
+        <a class="is-flipper-target" href="#hero">Overview</a>
+      </li>
+      <li class="is-flipper" data-id="features">
+        <a class="is-flipper-target" href="#features">Capabilities</a>
+      </li>
+      <li class="is-flipper" data-id="testimonies">
+        <a class="is-flipper-target" href="#testimonies">Integrations</a>
+      </li>
+      <li class="is-flipper" data-id="footer">
+        <a class="is-flipper-target" href="#contact">Contact</a>
+      </li>
+    </ul>
+    <div id="site-header-line" class="o-dashline"></div>
+  </nav>
+
+  <!-- Mobile menu panel -->
+  <div id="site-header-mobile-menu" class="mobile-only">
+    <div></div>
+    <ul>
+      <li data-id="hero"><a href="#hero">Overview</a></li>
+      <li data-id="features"><a href="#features">Capabilities</a></li>
+      <li data-id="testimonies"><a href="#testimonies">Integrations</a></li>
+      <li data-id="footer"><a href="#contact">Contact</a></li>
+    </ul>
+    <div id="site-header-mobile-bottom">
+      <div class="sub2">general enquiries:</div>
+      <a class="sub1" href="mailto:hello@lusion.co" target="_blank">hello@lusion.co</a>
+    </div>
+  </div>
+
+  <!-- Mobile hamburger toggle -->
+  <div id="site-header-mobile-btn" class="mobile-only">
+    <span>Menu</span><span>Close</span>
+  </div>
+
+  <!-- Blocks pointer events on the canvas while menu is open -->
+  <div id="site-header-blocker"></div>
+</header>
+
+<!-- ─── Site Footer / Scroll Indicator Bar ──────────────────────────────── -->
+<!--
+  Despite the id "site-footer" this is the persistent bottom-of-viewport
+  scroll-progress strip, not the page footer section.
+  The JS drives #site-footer-scroll-icon rotation and #site-footer-scroll-text.
+-->
+<footer id="site-footer">
+  <div id="site-footer-dot"></div>
+  <div id="site-footer-scroll" class="sub2">
+    <div id="site-footer-scroll-icon">
+      <!-- Rotating dashed ring -->
+      <svg viewBox="0 0 33 33">
+        <path
+          d="M17.58 32.965a17 17 0 0 1-2.16 0l.13-1.995a15 15 0 0 0 1.9 0zM11.837 30.234q.892.303 1.832.49l-.388 1.962a16 16 0 0 1-2.087-.558zM21.806 32.128q-1.017.345-2.087.557l-.388-1.961a14 14 0 0 0 1.832-.49zM8.444 28.559q.787.526 1.642.949L9.2 31.3a16.5 16.5 0 0 1-1.868-1.08zM25.668 30.22q-.895.6-1.868 1.08l-.886-1.792a14.5 14.5 0 0 0 1.642-.95zM5.598 26.06q.627.715 1.342 1.342l-1.32 1.503a17 17 0 0 1-1.525-1.525zM28.905 27.38q-.713.811-1.525 1.525l-1.32-1.503q.715-.627 1.342-1.342zM3.492 22.914q.422.855.95 1.642l-1.663 1.112q-.6-.895-1.08-1.868zM31.3 23.8q-.48.973-1.08 1.868l-1.661-1.112q.526-.787.949-1.642zM2.276 19.331q.187.94.49 1.832l-1.894.643a16 16 0 0 1-.557-2.087zM32.685 19.719q-.211 1.07-.557 2.087l-1.894-.643q.304-.892.49-1.832zM0 16.5q0-.543.035-1.08l1.995.13a15 15 0 0 0 0 1.9l-1.995.13A17 17 0 0 1 0 16.5M31 16.5q0-.48-.03-.95l1.995-.13a17 17 0 0 1 0 2.16l-1.995-.13q.03-.47.03-.95M2.766 11.837a14 14 0 0 0-.49 1.832L.315 13.28q.211-1.07.557-2.087zM32.128 11.194q.345 1.017.557 2.087l-1.961.388a14 14 0 0 0-.49-1.832zM4.441 8.444a14.5 14.5 0 0 0-.949 1.642L1.7 9.2q.48-.973 1.08-1.868zM30.22 7.332q.6.895 1.08 1.868l-1.792.886a14.5 14.5 0 0 0-.95-1.642zM6.94 5.598q-.715.627-1.342 1.342L4.095 5.62q.712-.811 1.525-1.525zM27.38 4.095a17 17 0 0 1 1.525 1.525l-1.503 1.32a15 15 0 0 0-1.342-1.342zM10.086 3.492q-.856.422-1.642.95L7.332 2.778q.895-.6 1.868-1.08zM23.8 1.7q.973.48 1.868 1.08L24.556 4.44a14.5 14.5 0 0 0-1.642-.949zM13.669 2.276q-.94.187-1.832.49L11.194.872q1.017-.345 2.087-.557zM19.719.315q1.07.211 2.087.557l-.643 1.894a14 14 0 0 0-1.832-.49zM16.5 0q.543 0 1.08.035l-.13 1.995a15 15 0 0 0-1.9 0L15.42.035Q15.958 0 16.5 0"
+          fill="currentColor"></path>
+      </svg>
+      <!-- Down chevrons -->
+      <div id="site-footer-scroll-arrow">
+        <svg viewBox="0 0 13 8">
+          <path fill="currentColor" d="M0 1.873 1.654 0l4.82 4.258L11.293 0l1.654 1.873-6.473 5.72z"></path>
+        </svg>
+        <svg viewBox="0 0 13 8">
+          <path fill="currentColor" d="M0 1.873 1.654 0l4.82 4.258L11.293 0l1.654 1.873-6.473 5.72z"></path>
+        </svg>
+      </div>
+    </div>
+    <div id="site-footer-scroll-text">Scroll to continue</div>
+  </div>
+</footer>

@@ -1,0 +1,191 @@
+---
+// SocialContent.astro
+// Section id: #social-content
+// JS binds to: #social-content-items-wrapper, .social-content-item [data-id, data-offset],
+// .social-content-item-clipper, .social-content-item-inner, .social-content-item-bg,
+// .social-content-item-title, .social-content-item-note, .social-content-item-cover,
+// #social-content-progress, .social-content-progress-item.
+// All ids, classes, and data-* attributes are preserved verbatim.
+---
+
+<div id="social-content" class="section">
+  <div class="section__inner">
+
+    <div id="social-content-items-wrapper">
+
+      <!-- Card: edge -->
+      <div class="social-content-item" data-id="edge" data-offset="0.49">
+        <div class="social-content-item-clipper">
+          <div class="social-content-item-inner">
+            <picture class="social-content-item-bg">
+              <source media="(min-width:768px)" srcset="/images/social-content/edge.webp" width="1700" height="1080" />
+              <img src="/images/social-content/edge_MOBILE.webp" width="600" height="800" loading="lazy"
+                decoding="async" />
+            </picture>
+            <h5 class="social-content-item-title">Runs on the edge<br />Refuses the cloud</h5>
+            <div class="social-content-item-note">On-device.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: sticker_1 -->
+      <div class="social-content-item" data-id="sticker_1" data-offset="0">
+        <div class="social-content-item-clipper">
+          <div class="social-content-item-inner">
+            <picture class="social-content-item-bg">
+              <source media="(min-width:768px)" srcset="/images/social-content/sticker_1.webp" width="900"
+                height="1080" />
+              <img src="/images/social-content/sticker_1_MOBILE.webp" width="600" height="800" loading="lazy"
+                decoding="async" />
+            </picture>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: always_on -->
+      <div class="social-content-item" data-id="always_on" data-offset="0.825">
+        <div class="social-content-item-clipper">
+          <div class="social-content-item-inner">
+            <picture class="social-content-item-bg">
+              <source media="(min-width:768px)" srcset="/images/social-content/always_on.webp" width="1920"
+                height="1080" />
+              <img src="/images/social-content/always_on_MOBILE.webp" width="600" height="800" loading="lazy"
+                decoding="async" />
+            </picture>
+            <h5 class="social-content-item-title">Always On</h5>
+            <div class="social-content-item-note">24/7 UPTIME. No power required.</div>
+            <picture class="social-content-item-cover desktop-only">
+              <source media="(min-width:768px)" srcset="/images/social-content/always_on_cover.webp" width="398"
+                height="283" />
+              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" width="1" height="1"
+                loading="lazy" decoding="async" />
+            </picture>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: color -->
+      <div class="social-content-item" data-id="color" data-offset="0">
+        <div class="social-content-item-clipper">
+          <div class="social-content-item-inner">
+            <picture class="social-content-item-bg">
+              <source media="(min-width:768px)" srcset="/images/social-content/color.webp" width="900"
+                height="1080" />
+              <img src="/images/social-content/color_MOBILE.webp" width="600" height="800" loading="lazy"
+                decoding="async" />
+            </picture>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: 3090 -->
+      <div class="social-content-item" data-id="3090" data-offset="0.47">
+        <div class="social-content-item-clipper">
+          <div class="social-content-item-inner">
+            <picture class="social-content-item-bg">
+              <source media="(min-width:768px)" srcset="/images/social-content/3090.webp" width="2250"
+                height="1080" />
+              <img src="/images/social-content/3090_MOBILE.webp" width="600" height="800" loading="lazy"
+                decoding="async" />
+            </picture>
+            <h5 class="social-content-item-title">Runs on RTX 3090</h5>
+            <div class="social-content-item-note">No More OOM on any consumer GPUs</div>
+            <picture class="social-content-item-cover desktop-only">
+              <source media="(min-width:768px)" srcset="/images/social-content/3090_cover.webp" width="588"
+                height="154" />
+              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" width="1" height="1"
+                loading="lazy" decoding="async" />
+            </picture>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: perfect -->
+      <div class="social-content-item" data-id="perfect" data-offset="0">
+        <div class="social-content-item-clipper">
+          <div class="social-content-item-inner">
+            <picture class="social-content-item-bg">
+              <source media="(min-width:768px)" srcset="/images/social-content/perfect.webp" width="900"
+                height="1080" />
+              <img src="/images/social-content/perfect_MOBILE.webp" width="600" height="800" loading="lazy"
+                decoding="async" />
+            </picture>
+            <div class="social-content-item-note">Perfect By Design</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: drop_test -->
+      <div class="social-content-item" data-id="drop_test" data-offset="0.5">
+        <div class="social-content-item-clipper">
+          <div class="social-content-item-inner">
+            <picture class="social-content-item-bg">
+              <source media="(min-width:768px)" srcset="/images/social-content/drop_test.webp" width="2135"
+                height="1080" />
+              <img src="/images/social-content/drop_test_MOBILE.webp" width="600" height="800" loading="lazy"
+                decoding="async" />
+            </picture>
+            <h5 class="social-content-item-title">Drop-Tested</h5>
+            <div class="social-content-item-note">
+              <span>Test conditions: hard surface</span>
+              <span>DATE: 02/29/2026</span>
+              <span>Damage: The Floor ;)</span>
+            </div>
+            <picture class="social-content-item-cover desktop-only">
+              <source media="(min-width:768px)" srcset="/images/social-content/drop_test_cover.webp" width="528"
+                height="176" />
+              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" width="1" height="1"
+                loading="lazy" decoding="async" />
+            </picture>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: sticker_2 -->
+      <div class="social-content-item" data-id="sticker_2" data-offset="0">
+        <div class="social-content-item-clipper">
+          <div class="social-content-item-inner">
+            <picture class="social-content-item-bg">
+              <source media="(min-width:768px)" srcset="/images/social-content/sticker_2.webp" width="900"
+                height="1080" />
+              <img src="/images/social-content/sticker_2_MOBILE.webp" width="600" height="800" loading="lazy"
+                decoding="async" />
+            </picture>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: legacy_support -->
+      <div class="social-content-item" data-id="legacy_support" data-offset="0.61">
+        <div class="social-content-item-clipper">
+          <div class="social-content-item-inner">
+            <picture class="social-content-item-bg">
+              <source media="(min-width:768px)" srcset="/images/social-content/legacy_support.webp" width="2250"
+                height="1080" />
+              <img src="/images/social-content/legacy_support_MOBILE.webp" width="600" height="800" loading="lazy"
+                decoding="async" />
+            </picture>
+            <h5 class="social-content-item-title">Legacy Support</h5>
+            <div class="social-content-item-note">Supporting backward compatibility since the 5th millennium BCE</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- end #social-content-items-wrapper -->
+
+    <!-- Mobile dot progress indicator — one dot per card, first is active -->
+    <div id="social-content-progress" class="mobile-only">
+      <div class="social-content-progress-item is-active"></div>
+      <div class="social-content-progress-item"></div>
+      <div class="social-content-progress-item"></div>
+      <div class="social-content-progress-item"></div>
+      <div class="social-content-progress-item"></div>
+      <div class="social-content-progress-item"></div>
+      <div class="social-content-progress-item"></div>
+      <div class="social-content-progress-item"></div>
+      <div class="social-content-progress-item"></div>
+    </div>
+
+  </div>
+</div>

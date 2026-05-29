@@ -1,0 +1,283 @@
+---
+// index.astro
+// Assembles the full Oryzo page.
+//
+// DOM STRUCTURE (must match exactly what hoisted.CRsATKbF.js expects):
+//
+//   <body>
+//     <canvas id="canvas">           ← main 3D WebGL canvas
+//     <svg style="display:none">     ← global SVG sprite defs
+//     <div id="ui">
+//       <div id="site-content">
+//         <div id="pages-container">
+//           <div id="home" class="page">
+//             <!-- all page sections in order -->
+//           </div>
+//         </div>
+//       </div>
+//       <header id="site-header">    ← from Header.astro
+//       <footer id="site-footer">    ← from Header.astro (scroll indicator)
+//       <div id="scroll-indicator">
+//       <div id="preloader">
+//     </div>
+//     <div id="video-overlay">       ← outside #ui
+//   </body>
+
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Ai from '../components/Ai.astro';
+import Wearable from '../components/Wearable.astro';
+import Features from '../components/Features.astro';
+import Sentiment from '../components/Sentiment.astro';
+import Grip from '../components/Grip.astro';
+import Sustainability from '../components/Sustainability.astro';
+import Testimonies from '../components/Testimonies.astro';
+import SocialContent from '../components/SocialContent.astro';
+import Product from '../components/Product.astro';
+import OpenWeight from '../components/OpenWeight.astro';
+---
+
+<Layout>
+
+  <!-- ─── Main 3D WebGL canvas ──────────────────────────────────────────── -->
+  <canvas id="canvas"></canvas>
+
+  <!-- ─── Global SVG sprite definitions ────────────────────────────────── -->
+  <!--
+    These symbols are referenced via <use href="#logo-tmpl"> and
+    <use href="#hand-tmpl"> throughout every component.
+    They must live in the document before any component that uses them.
+  -->
+  <svg style="display: none;">
+
+    <!-- ORYZO wordmark / logotype -->
+    <symbol id="logo-tmpl" viewBox="0 0 809 174">
+      <path d="M87 174.007C36 174.007 0 132.007 0 87.007C0 42.007 36 0.00697267 87 0.00697267C138 0.00697267 174 42.007 174 87.007C174 132.007 138 174.007 87 174.007ZM87 135.007C112 135.007 135 114.988 135 87.007C135 59.0264 112 39.007 87 39.007C62 39.007 39 59.0264 39 87.007C39 114.988 62 135.007 87 135.007Z" fill="currentColor"></path>
+      <path d="M196.21 170.007V3.64971H263.618C307.624 3.64971 327.21 27.5604 327.21 60.6284C327.21 84.0304 317.29 103.108 295.923 112.011L333.315 170.007H284.476L254.969 117.861H237.418V170.007H196.21ZM237.418 79.7061H264.126C280.66 79.7061 285.493 71.5663 285.493 60.6284C285.493 49.6905 280.66 41.8051 264.126 41.8051H237.418V79.7061Z" fill="currentColor"></path>
+      <path d="M385.705 170.007V101.073L324.911 3.64971H373.495L406.309 62.1546L439.122 3.64971H486.689L426.913 99.8012V170.007H385.705Z" fill="currentColor"></path>
+      <path d="M490.688 170.007V133.124L567.762 41.8051H494.503V3.64971H619.907V40.5333L542.834 131.852H622.451V170.007H490.688Z" fill="currentColor"></path>
+      <path d="M722 174C671 174 635 132 635 87C635 42 671 0 722 0C773 0 809 42 809 87C809 132 773 174 722 174ZM722 135C747 135 770 114.981 770 87C770 59.0194 747 39 722 39C697 39 674 59.0194 674 87C674 114.981 697 135 722 135Z" fill="currentColor"></path>
+    </symbol>
+
+    <!-- Hand cursor illustration used in #ai and #grip sections -->
+    <symbol id="hand-tmpl" viewBox="0 0 32 40">
+      <path fill="currentColor" d="M6.718 22.615V17.36c-.325.341-.659.696-.986 1.058-1.276 1.407-2.352 2.76-2.775 3.622-.293.602-.263 1.344.017 2.186.271.816.721 1.549 1.03 2.016l5.182 6.817a5.1 5.1 0 0 1 1.04 3.085v2.231a1.375 1.375 0 0 1-2.75 0v-2.231c0-.515-.169-1.012-.48-1.421v-.001l-5.214-6.859-.028-.036-.025-.038c-.34-.513-.97-1.506-1.365-2.696-.393-1.182-.616-2.748.124-4.262v-.002c.616-1.254 1.946-2.867 3.207-4.258a64 64 0 0 1 3.023-3.103V6.902a4.156 4.156 0 0 1 5.711-3.851 4.155 4.155 0 0 1 8.153.86c.466-.175.966-.27 1.483-.27A4.167 4.167 0 0 1 26.23 7.68a4.133 4.133 0 0 1 5.52 3.893v15.933c0 2.3-.866 4.735-3.162 7.469h.001c-.444.53-.681 1.14-.681 1.727v1.673a1.375 1.375 0 1 1-2.75 0v-1.673c0-1.332.533-2.55 1.324-3.493v-.001C28.46 30.854 29 29.024 29 27.506V11.572a1.383 1.383 0 1 0-2.767.008v8.293a1.375 1.375 0 1 1-2.75 0V7.808c0-.782-.635-1.417-1.418-1.417-.82 0-1.474.67-1.474 1.415v10.23a1.375 1.375 0 0 1-2.75 0V4.153a1.406 1.406 0 0 0-2.81 0v11.974a1.375 1.375 0 0 1-2.75 0V6.902l-.007-.142a1.406 1.406 0 0 0-2.806.142v15.713a1.375 1.375 0 0 1-2.75 0"></path>
+    </symbol>
+
+  </svg>
+
+  <!-- ─── UI root ────────────────────────────────────────────────────────── -->
+  <div id="ui">
+
+    <div id="site-content">
+      <div id="pages-container">
+        <div id="home" class="page">
+
+          <!-- Sections — order is critical; JS uses DOM order for scroll logic -->
+          <Hero />
+          <Ai />
+          <Wearable />
+          <Features />
+          <Sentiment />
+          <Grip />
+          <Sustainability />
+          <Testimonies />
+          <SocialContent />
+          <Product />
+          <OpenWeight />
+
+          <!-- ─── Footer section ──────────────────────────────────────── -->
+          <!--
+            id="footer" is a JS-navigable section (nav links point to #contact
+            which lives inside it). Not extracted to a component because it
+            contains a <form> with JS-driven newsletter submission and several
+            ids the engine reads (#footer-top, #footer-lusion-logo,
+            #footer-title, #footer-lusion-link, #footer-love, #footer-email,
+            #footer-email-input, #footer-email-btn, #footer-newsletter-form,
+            #footer-newsletter-message, #footer-contact-wrapper, #contact,
+            #footer-social-wrapper, #footer-extra-wrapper, #footer-caption).
+          -->
+          <div id="footer" class="section">
+            <div class="section__inner o-container o-grid">
+
+              <div id="footer-top">
+                <div id="footer-lusion-logo"></div>
+                <h2 id="footer-title">
+                  <span>We caught your attention with a non-existent product.</span>
+                  <span>If we can sell a coaster, imagine what we can do for your brand.</span>
+                </h2>
+              </div>
+
+              <a id="footer-lusion-link" class="btn is-dark is-flipper" href="https://lusion.co/" target="_blank">
+                lusion.co
+              </a>
+
+              <div id="footer-love" class="sub2">
+                <div>
+                  Built by <a href="https://lusion.co/" target="_blank">Lusion</a><br />
+                  with love
+                  <svg viewBox="0 0 11 9">
+                    <path d="M5.5 8.967C4.198 7.234 1.535 6.44.428 4.55-.249 3.47-.141 1.707.732.823 1.502-.083 3.287-.23 4.22.487c.99.703 1.144 1.648 1.232 2.816.15.022.097-.062.112-.224.118-1.143.316-1.904 1.232-2.592.937-.72 2.702-.565 3.472.336.874.884.98 2.649.304 3.728-1.11 1.876-3.77 2.69-5.072 4.416" fill="currentColor"></path>
+                  </svg>
+                </div>
+                <div>
+                  <span>Share with friends</span>
+                  <span> If you like it</span>
+                </div>
+                <button class="is-flipper">Copy URL</button>
+              </div>
+
+              <div id="footer-email" role="region" aria-labelledby="footer-newsletter-label">
+                <label id="footer-newsletter-label" class="footer-item-caption sub2" for="footer-email-input">
+                  Subscribe to Lusion's Newsletter:
+                </label>
+                <form id="footer-newsletter-form" novalidate>
+                  <div id="footer-email-input-wrapper">
+                    <input
+                      type="email"
+                      id="footer-email-input"
+                      name="EMAIL"
+                      autocomplete="email"
+                      placeholder="Your Email"
+                      required
+                      aria-required="true"
+                      aria-describedby="footer-newsletter-message"
+                    />
+                    <button type="submit" id="footer-email-btn" aria-label="Subscribe to newsletter">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="currentColor" fill-rule="evenodd" d="M4.11 12.75a.75.75 0 0 1 0-1.5h13.978l-5.036-5.036a.75.75 0 1 1 1.06-1.06l6.316 6.315.53.53-.53.53-6.316 6.317a.75.75 0 0 1-1.06-1.061l5.035-5.035H4.109Z" clip-rule="evenodd"></path>
+                      </svg>
+                    </button>
+                    <div class="o-dashline"></div>
+                  </div>
+                  <div id="footer-newsletter-message" aria-live="polite"></div>
+                </form>
+              </div>
+
+              <div id="footer-contact-wrapper">
+                <div id="contact" class="footer-item">
+                  <div class="footer-item-caption sub2">New Business:</div>
+                  <a class="footer-item-link is-flipper" href="mailto:business@lusion.co" target="_blank">
+                    business@lusion.co
+                  </a>
+                </div>
+                <div class="footer-item">
+                  <div class="footer-item-caption sub2">General Enquires:</div>
+                  <a class="footer-item-link is-flipper" href="mailto:hello@lusion.co" target="_blank">
+                    hello@lusion.co
+                  </a>
+                </div>
+              </div>
+
+              <div id="footer-social-wrapper">
+                <a class="footer-item-link" href="https://x.com/lusionltd" target="_blank">X</a>
+                <a class="footer-item-link is-flipper" href="https://www.instagram.com/lusionltd" target="_blank">Instagram</a>
+                <a class="footer-item-link is-flipper" href="https://www.linkedin.com/company/lusionltd" target="_blank">Linkedin</a>
+              </div>
+
+              <div id="footer-extra-wrapper">
+                <a class="footer-item-link is-flipper" href="/terms_and_conditions.pdf" target="_blank">Terms &amp; Conditions</a>
+                <a class="footer-item-link is-flipper" href="/privacy_policy.pdf" target="_blank">Privacy Policy</a>
+              </div>
+
+              <div id="footer-caption" class="sub2">
+                <div class="o-dashline mobile-only"></div>
+                <span>
+                  This entire site is a fictional creative project by Lusion.
+                  Oryzo doesn't exist. No products are for sale.
+                  All claims are satirical and for entertainment purposes only.
+                </span>
+              </div>
+
+            </div>
+          </div>
+          <!-- end #footer -->
+
+        </div>
+        <!-- end #home -->
+      </div>
+      <!-- end #pages-container -->
+    </div>
+    <!-- end #site-content -->
+
+    <!-- Header + site-footer scroll strip (both rendered by Header.astro) -->
+    <Header />
+
+    <!-- ─── Scroll progress indicator ──────────────────────────────────── -->
+    <!--
+      #scroll-indicator lives inside #ui but outside #site-content.
+      JS drives #scroll-indicator__bar-inner position and
+      #scroll-indicator__bar-text content.
+    -->
+    <div id="scroll-indicator">
+      <div id="scroll-indicator__bar" class="prevent-select">
+        <div id="scroll-indicator__bar-inner">
+          <div id="scroll-indicator__bar-dot"></div>
+          <div id="scroll-indicator__bar-text">Oryzo-1 Model</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Preloader ───────────────────────────────────────────────────── -->
+    <!--
+      JS renders the intro animation into #preloader-canvas, then fades
+      #preloader out once assets are ready.
+    -->
+    <div id="preloader">
+      <canvas id="preloader-canvas"></canvas>
+    </div>
+
+  </div>
+  <!-- end #ui -->
+
+  <!-- ─── Video overlay ─────────────────────────────────────────────────── -->
+  <!--
+    Sits outside #ui so it can render above everything at z-index max.
+    JS populates #video-overlay__vimeo-video and toggles visibility.
+    #video-overlay__mobile-close-btn is touch-only.
+    #video-overlay-cursor shows play/pause/close states on desktop.
+  -->
+  <div id="video-overlay">
+    <div id="video-overlay__inner">
+      <span class="video-overlay__glow"></span>
+      <span class="video-overlay__border"></span>
+      <div id="video-overlay__vimeo-video"></div>
+      <div id="video-overlay__controls">
+        <button id="video-overlay__mute-btn">
+          <!-- Unmuted icon -->
+          <svg id="video-overlay__mute-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3Zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02ZM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77Z"></path>
+          </svg>
+          <!-- Muted icon -->
+          <svg id="video-overlay__unmute-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63Zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.796 8.796 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71ZM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3ZM12 4 9.91 6.09 12 8.18V4Z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile-only close button (sits outside #video-overlay__inner) -->
+    <button id="video-overlay__mobile-close-btn">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3.75781 3.75732L12.2431 12.2426" stroke="white" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M12.2422 3.75732L3.75691 12.2426" stroke="white" stroke-width="2" stroke-linecap="round"></path>
+      </svg>
+    </button>
+
+    <!-- Custom cursor — JS swaps between play / pause / close states -->
+    <div id="video-overlay-cursor">
+      <svg id="video-overlay-cursor__play" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11.17-6.86a1 1 0 0 0 0-1.72L9.5 4.28a1 1 0 0 0-1.5.86Z"></path>
+      </svg>
+      <svg id="video-overlay-cursor__pause" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M6 4h4v16H6V4Zm8 0h4v16h-4V4Z"></path>
+      </svg>
+      <svg id="video-overlay-cursor__close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 6l12 12M18 6L6 18"></path>
+      </svg>
+    </div>
+  </div>
+  <!-- end #video-overlay -->
+
+</Layout>

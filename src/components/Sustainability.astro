@@ -1,0 +1,63 @@
+---
+// Sustainability.astro
+// Section id: #sustainability
+// JS binds to: #sustainability-hero, #sustainability-hero-inner,
+// #sustainability-tagline, #sustainability-title, #sustainability-title-pre,
+// #sustainability-title-main, #sustainability-desc,
+// #sustainability-items, .sustainability-item, .sustainability-item-num,
+// #sustainability-rive-canvas-harvesting, #sustainability-rive-canvas-text.
+// All ids, classes, and data-* attributes are preserved verbatim.
+---
+
+<div id="sustainability" class="section">
+  <div class="section__inner o-container">
+
+    <!-- Hero text block -->
+    <div id="sustainability-hero">
+      <div id="sustainability-hero-inner">
+        <div id="sustainability-tagline" class="sub2">100% Plant-based</div>
+        <div id="sustainability-title">
+          <h4 id="sustainability-title-pre">Vegan-friendly</h4>
+          <h2 id="sustainability-title-main">sustainability</h2>
+        </div>
+        <div id="sustainability-desc" class="body2">
+          Pure cork sourced sustainably. <br />Completely vegan — no cows were harmed,
+          <br />but it might be full of "bull"sh*t.
+        </div>
+      </div>
+    </div>
+
+    <!-- Three stat items -->
+    <div id="sustainability-items" class="o-grid">
+
+      <!-- Item 1: first harvest age -->
+      <div class="sustainability-item">
+        <h3 class="sustainability-item-title">Average <br />age of first <br />harvest</h3>
+        <div class="sustainability-item-desc body2">
+          Cork oaks are typically first harvested at around 25 years, once the bark is thick enough to remove safely.
+        </div>
+        <div class="sustainability-item-num">25</div>
+      </div>
+
+      <!-- Item 2: harvesting interval — Rive animation canvas -->
+      <div class="sustainability-item">
+        <h4 class="sustainability-item-title">Harvesting <br />interval</h4>
+        <div class="sustainability-item-desc body2">
+          After each harvest, the bark takes about 9 years to regrow, making cork a renewable material.
+        </div>
+        <canvas id="sustainability-rive-canvas-harvesting"></canvas>
+      </div>
+
+      <!-- Item 3: power draw — Rive animation canvas -->
+      <div class="sustainability-item">
+        <h4 class="sustainability-item-title">Power draw <br />while in use</h4>
+        <div class="sustainability-item-desc body2">
+          No compute. No tokens. So you can say "please" and "thank you" as much as you want, guilt free.
+        </div>
+        <canvas id="sustainability-rive-canvas-text"></canvas>
+      </div>
+
+    </div>
+
+  </div>
+</div>
