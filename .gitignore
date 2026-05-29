@@ -22,3 +22,11 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Blender binary + intermediate renders + diagnostic screenshots.
+# These are produced locally / by the Blender pipeline; the final
+# textures live in public/textures/ and are committed.
+tools/bin/
+tools/out/
+tools/screenshots/
+tools/_uv_*.png
