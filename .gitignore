@@ -31,3 +31,5 @@ tools/bin/
 tools/out/
 tools/screenshots/
 tools/_uv_*.png
+*.orig-sustainability
+*.preshift
