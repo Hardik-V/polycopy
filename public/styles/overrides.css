@@ -63,3 +63,17 @@
   display: none !important;
 }
 
+/* ────────────────────────────────────────────────────────────────────────
+ * FOOTER
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/* Empty slot the engine may decorate; keep in DOM for bindings, hide visually. */
+#footer-lusion-logo {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+

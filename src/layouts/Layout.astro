@@ -59,5 +59,34 @@ const {
   </head>
   <body>
     <slot />
+    <script is:inline>
+      document.addEventListener(
+        "DOMContentLoaded",
+        () => {
+          const form = document.getElementById("footer-newsletter-form");
+          const input = document.getElementById("footer-email-input");
+          const message = document.getElementById("footer-newsletter-message");
+          if (!form || !input) return;
+
+          form.addEventListener(
+            "submit",
+            (event) => {
+              event.preventDefault();
+              event.stopImmediatePropagation();
+              const email = input.value.trim();
+              if (!email) return;
+              if (message) {
+                message.textContent = "Opening your mail app…";
+              }
+              window.location.href =
+                "mailto:hardikverma2005@gmail.com?subject=Portfolio%20contact&body=" +
+                encodeURIComponent("Hi Hardik,\n\nMy email: " + email + "\n\n");
+            },
+            true
+          );
+        },
+        { once: true }
+      );
+    </script>
   </body>
 </html>
