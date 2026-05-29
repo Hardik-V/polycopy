@@ -1,0 +1,140 @@
+# Project Context for Cursor — Hardik Verma Portfolio
+
+## What This Is
+A clone of the award-winning [oryzo.ai](https://oryzo.ai) website — a premium WebGL/Three.js product showcase built by Lusion design studio. The goal is to repurpose it as **Hardik Verma's personal developer portfolio**.
+
+## Tech Stack
+- **Framework**: Astro (static site generator)
+- **3D Engine**: Three.js + Gaussian Splatting (`.sog` files) via a custom WebGL engine
+- **Styling**: Single CSS file at `public/_astro/index.css`
+- **JS**: One monolithic bundle at `public/_astro/main.js` (do NOT edit this — it's the compiled 3D engine)
+- **Workers**: `public/_astro/SplatsWorker.js` + `public/_astro/splat_sorter_bg.wasm` (Gaussian splat sorting — do NOT touch)
+
+## Project Structure
+```
+src/
+  layouts/Layout.astro        ← HTML shell, loads CSS + main.js
+  pages/index.astro           ← ALL page content lives here
+  components/                 ← Section components (Hero, Features, etc.)
+    Header.astro
+    Hero.astro
+    Ai.astro
+    Features.astro
+    Grip.astro
+    OpenWeight.astro
+    Product.astro
+    Sentiment.astro
+    SocialContent.astro
+    Sustainability.astro
+    Testimonies.astro
+    Wearable.astro
+
+public/
+  _astro/main.js              ← Compiled 3D engine (DO NOT EDIT)
+  _astro/index.css            ← All styles
+  images/                     ← Static images used in social/wearable sections
+    social-content/           ← 9 webp images (lifestyle/product shots)
+    testimonies/              ← 5 webp images (fake testimonials)
+    video_thumb.webp
+    wearable-gallery/         ← Gallery images + 2 mp4 videos
+  models/                     ← 3D .buf files (DO NOT REPLACE — custom format)
+  textures/                   ← WebP/PNG textures for 3D models
+  fonts/                      ← Literata.woff2, DM-Mono-400-Latin.woff2
+  splats/                     ← Gaussian splat files (props.sog, table_reflection.sog)
+  rive/oryzo.riv              ← Rive animation file
+```
+
+## Critical Rule
+**Do not edit `public/_astro/main.js`** or any file in `public/_astro/`. The 3D engine is a compiled black box. All text, nav, and content changes go in `src/` only. The JS engine reads DOM element IDs and class names — if you rename HTML elements, test that the 3D scene still works.
+
+## What the Site Looks Like (Section by Section)
+The site is a single long scrolling page with these sections in order:
+
+1. **Hero** — Giant "ORYZO" text, 3D cork coaster on a desk with stationery, tagline "MADE FOR MARKETS. BUILT FOR MICROSECONDS.", nav bar (OVERVIEW / CAPABILITIES / INTEGRATIONS / CONTACT), video play button bottom right
+2. **Intro** — "ISN'T JUST A DASHBOARD" with coaster floating on dark bg, description text right side
+3. **AI Section** — "Powered by AI*" heading, coaster held in hand, colorful glow bg, "SENTIENT-1" label
+4. **Wearable Gallery** — "SO LIGHTWEIGHT, it's wearable" with scrolling image gallery of lifestyle photos
+5. **Features (Table scene)** — 3D desk/table scene, features cycle through: "ELEVATE YOUR COFFEE EXPERIENCE", "THERMODYNAMIC STABILITY", "PERFECTLY ROUND SERIOUSLY", "SMART FLIP" with descriptions
+6. **Sustainability** — Giant "sustainability" text with bark/wood 3D texture close-up
+7. **Integrations/Drop Test** — "3090 Drop Test" scrolling text, stats
+8. **Product Selector** — "CHOOSE YOUR OWN ORYZO" with 3 tier selector (ORYZO / ORYZO PRO / ORYZO PRO MAX)
+9. **Contact/Footer** — "WE CAUGHT YOUR ATTENTION WITH A NON-EXISTENT PRODUCT. IF WE CAN SELL A COASTER, IMAGINE WHAT WE CAN DO FOR YOUR BRAND." + Lusion branding + email signup
+
+## The Goal
+Transform this from an Oryzo product site into **Hardik Verma's personal developer portfolio**. Keep all 3D visuals and animations — only change text, nav labels, images in `public/images/`, and branding.
+
+## About Hardik (the person)
+- **Name**: Hardik Verma
+- **Email**: hardikverma2005@gmail.com
+- **Phone**: +61 468 728 906
+- **Location**: Marsden Park, NSW, Australia
+- **GitHub**: github.com/Hardik-V
+- **LinkedIn**: linkedin.com/in/v-hardik
+- **Degree**: Bachelor of Engineering (Software) (Honours) at UNSW, 3rd year (2024–2027), WAM: 82.421
+- **Australian Citizen**
+
+### Key Projects
+1. **Financial Sentiment & Market Event Visualiser** (Feb–Apr 2026)
+   - **Won the Optiver industry prize** for excellence
+   - Python, HTML, AWS Lambda, API Gateway, S3, Docker
+   - 3-microservice architecture on AWS, star-map visualisation of market sentiment vs price
+   - GitHub: github.com/Hardik-V/3011_Bravo
+
+2. **E-Commerce Storefront Platform** (Mar–Apr 2026)
+   - Received letter of recommendation from UNSW Director of Studies
+   - React, Node.js, PostgreSQL, Vercel, MCP
+   - 25+ REST API endpoints, 93% test coverage
+   - Built MCP server exposing all endpoints as AI-callable tools for LLM workflow automation
+   - GitHub: github.com/nloudev/H14B_CoolCoolCool
+
+### Skills
+- **Languages**: Python, Java, JavaScript, TypeScript, C, SQL
+- **AI/LLM**: Prompt Engineering, Claude/OpenAI APIs, Agentic Workflows, Tool Calling, MCP, AI Agent Design
+- **Backend**: Node.js, Express, REST APIs, PostgreSQL
+- **DevOps/Cloud**: Git, Docker, CI/CD, AWS (EC2, S3, IAM), Microservices, Linux
+- **Frontend**: React, HTML, CSS
+
+### Experience
+- Private Tutor (Maths & Sciences) — Self-employed, Mar 2023–present
+- Public Relations Director — UNSW Hindu Society, Feb 2025–present (grew social engagement ~60%)
+- Australian Air Force Cadets — Feb 2021–Aug 2023
+
+## Suggested Section Mapping (Oryzo → Portfolio)
+
+| Original | Portfolio Version |
+|---|---|
+| "ORYZO" hero title | "HARDIK VERMA" |
+| "MADE FOR MARKETS. BUILT FOR MICROSECONDS." | "BUILT FOR SCALE. ENGINEERED FOR IMPACT." |
+| "Designed by Lusion" box | UNSW Software Engineering · WAM 82.421 |
+| Nav: OVERVIEW/CAPABILITIES/INTEGRATIONS/CONTACT | ABOUT / PROJECTS / SKILLS / CONTACT |
+| "Powered by AI* SENTIENT-1" | "Powered by AI* MCP-1" — your MCP server project |
+| "ISN'T JUST A DASHBOARD" | "ISN'T JUST A DEVELOPER" or project intro |
+| Wearable gallery images | Project screenshots / lifestyle dev photos |
+| Feature descriptions | Skill showcases (AWS, Docker, AI agents, etc.) |
+| "THERMODYNAMIC STABILITY" | A technical skill feature with witty framing |
+| Sustainability section | Background / origin story |
+| Product selector 3 tiers | Three projects with bullet points |
+| "IF WE CAN SELL A COASTER" footer | "IF I CAN WIN AN OPTIVER PRIZE, IMAGINE WHAT I CAN BUILD FOR YOU." |
+| BUSINESS@LUSION.CO | hardikverma2005@gmail.com |
+| Lusion.co button | github.com/Hardik-V |
+
+## Images to Replace
+The images in `public/images/social-content/` and `public/images/testimonies/` and `public/images/wearable-gallery/` are lifestyle/product photos. These can be replaced with:
+- Screenshots of your projects (star-map visualiser, e-commerce dashboard)
+- A headshot
+- Any dev/work photos
+
+Replace by swapping files with the **same filename and format** (webp preferred) so the JS engine finds them.
+
+## What NOT to Change
+- Any element `id` or `class` that the 3D engine uses to position/animate things
+- The 3D model files in `public/models/` and `public/splats/`
+- The Rive animation at `public/rive/oryzo.riv` (it's baked)
+- Anything in `public/_astro/`
+- Font files (the fonts work well for a portfolio)
+
+## Current State
+- Site is fully working locally (GitHub Codespaces, port 4321)
+- `public/scripts/` contains Wakaru-decompiled JS chunks — these are NOT wired up and can be ignored. The working JS is `public/_astro/main.js`
+- Layout.astro correctly loads `/_astro/main.js` and `/_astro/index.css`
+- All fingerprint hashes have been removed from asset filenames and internal references updated
