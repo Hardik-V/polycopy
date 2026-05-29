@@ -38,10 +38,12 @@ from buf_codec import Attribute, BufFile, auto_pack_params, serialize
 RADIUS = 0.04493
 THICKNESS = 0.005
 
-# Default: flush on desk (transform-to-hardik-portfolio pose). Lifting Y to escape the
-# cork-bowl SDF fixes dark-face lighting but makes the coin float — see coin-sdf branch.
-Y_BOTTOM = 0.0
-Y_TOP = THICKNESS
+# Lift above cork-bowl SDF in coasterFrag (fixes dark-face shadow on flat coin mesh).
+# Pair with transform animation buffers — do NOT run shift_coaster_anims.py.
+SDF_BODY_TOP_Y = 0.0172
+ESCAPE_MARGIN = 0.0008
+Y_BOTTOM = SDF_BODY_TOP_Y + ESCAPE_MARGIN
+Y_TOP = Y_BOTTOM + THICKNESS
 
 UV_SCALE = 1.0 / 3.0
 

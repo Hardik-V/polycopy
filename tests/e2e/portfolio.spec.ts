@@ -13,7 +13,6 @@ const SECTION_SHOTS: { id: string; file: string; dwellMs?: number }[] = [
   { id: 'features', file: '04-features' },
   { id: 'encryption', file: '05-encryption-sentiment' },
   { id: 'grip', file: '06-grip' },
-  { id: 'sustainability', file: '07-sustainability' },
   { id: 'testimonies', file: '08-testimonies' },
   { id: 'social-content', file: '09-social-content' },
   { id: 'product', file: '10-product' },
@@ -64,7 +63,7 @@ test.describe('Hardik portfolio — full scroll captures', () => {
       await capture(page, file, dwellMs ?? 1600);
     }
 
-    // Extra: features — coin should sit on desk (transform-branch mesh Y)
+    // Extra: features — coin lifted above SDF (coin-sdf mesh) + transform anims
     await scrollToSection(page, 'features', 0.35);
     await page.waitForTimeout(500);
     await page.evaluate(() => {
@@ -76,17 +75,43 @@ test.describe('Hardik portfolio — full scroll captures', () => {
     await scrollToSection(page, 'ai', 0.45);
     await capture(page, '02b-ai-hand', 2500);
 
+    // Sustainability act: dark bark zoom then light DOM text (main branch behaviour)
+    await scrollToSection(page, 'sustainability', 0.1);
+    await page.evaluate(() => {
+      const el = document.getElementById('sustainability');
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: top + window.innerHeight * 0.55, behavior: 'instant' });
+    });
+    await capture(page, '07-sustainability-dark-bark', 2800);
+
+    await page.evaluate(() => {
+      const el = document.getElementById('sustainability');
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      // Engine shows #sustainability-hero when showScreenOffset >= ~1.8
+      window.scrollTo({ top: top + window.innerHeight * 2.35, behavior: 'instant' });
+    });
+    await page.waitForTimeout(2000);
+    const hero = page.locator('#sustainability-hero');
+    await expect(hero).toBeVisible();
+    await capture(page, '07b-sustainability-light-text', 2500);
+
+    await page.evaluate(() => {
+      const el = document.getElementById('sustainability');
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: top + window.innerHeight * 3.6, behavior: 'instant' });
+    });
+    await capture(page, '07c-sustainability-stats', 2200);
+
+    await expect(page.locator('#sustainability-title-main')).toHaveText(/sustainability/i);
+
     // Hero glass card still collapsed
     await scrollToSection(page, 'hero', 0.15);
     const box = await page.locator('#hero-card').boundingBox();
     expect(box).not.toBeNull();
     expect(box!.width).toBeLessThanOrEqual(2);
     expect(box!.height).toBeLessThanOrEqual(2);
-
-    // Sustainability from transform branch (curiosity DOM — 3D left for later)
-    await scrollToSection(page, 'sustainability', 0.25);
-    await expect(page.locator('#sustainability-title-main')).toHaveText(/curiosity/i);
-    const hero = page.locator('#sustainability-hero');
-    expect(await hero.evaluate((el) => getComputedStyle(el).visibility)).toBe('hidden');
   });
 });
