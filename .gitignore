@@ -33,3 +33,6 @@ tools/screenshots/
 tools/_uv_*.png
 *.orig-sustainability
 *.preshift
+tests/test-results/
+tests/playwright-report/
+tests/artifacts/
