@@ -63,11 +63,3 @@
   display: none !important;
 }
 
-/* ────────────────────────────────────────────────────────────────────────
- * SUSTAINABILITY (DOM overlay — 3D bark/peel meshes are still original)
- * ──────────────────────────────────────────────────────────────────────── */
-
-#sustainability-title-main {
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}

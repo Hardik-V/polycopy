@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-Regenerate sustainability_text.buf + sustainability_text_outline.buf with new copy.
+Regenerate sustainability_text*.buf by warping the original Lusion meshes.
 
-The engine bakes peel-animation params into these meshes (position.z = curveu,
-OP.z = perimeter, etc.). We regenerate fill + outline from a font outline while
-preserving the same attribute layout the shaders expect.
+The peel shader bakes curveu, perimeter, radius, and outline topology into the
+assets. Re-triangulating from scratch breaks lighting and animation. Instead we
+keep the original connectivity and remap XY (plus outline offsets) to fit new
+copy inside the same bounds.
 
 Usage (from repo root):
     python3 tools/gen_sustainability_text.py "hardik verma"
@@ -16,206 +17,159 @@ import argparse
 import sys
 from pathlib import Path
 
-import mapbox_earcut as earcut
 import matplotlib
 
 matplotlib.use("Agg")
 import numpy as np
 from matplotlib import font_manager as fm
 from matplotlib.textpath import TextPath
+from matplotlib.patches import PathPatch
+from matplotlib.path import Path as MplPath
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 from buf_codec import Attribute, BufFile, auto_pack_params, parse, serialize
 
-FONT_CANDIDATES = [
-    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-    "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
-]
+FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
+REF_FILL = ROOT / "public/models/sustainability_text.buf.orig-sustainability"
+REF_OUTLINE = ROOT / "public/models/sustainability_text_outline.buf.orig-sustainability"
+FALLBACK_FILL = ROOT / "public/models/sustainability_text.buf"
+FALLBACK_OUTLINE = ROOT / "public/models/sustainability_text_outline.buf"
 
 
-def _pick_font() -> str:
-    for p in FONT_CANDIDATES:
-        if Path(p).exists():
-            return str(p)
-    raise FileNotFoundError("No usable font found for text mesh generation")
+def _ref_paths() -> tuple[Path, Path]:
+    fill = REF_FILL if REF_FILL.exists() else FALLBACK_FILL
+    outline = REF_OUTLINE if REF_OUTLINE.exists() else FALLBACK_OUTLINE
+    return fill, outline
 
 
-def _text_polys(text: str, target_w: float, target_h: float) -> list[np.ndarray]:
-    prop = fm.FontProperties(fname=_pick_font(), size=100)
-    path = TextPath((0, 0), text, prop=prop)
-    polys = [p for p in path.to_polygons() if len(p) >= 3]
+def _layout_polys(text: str, target_w: float, target_h: float) -> list[np.ndarray]:
+    """Build letter outlines scaled to the original sustainability bounds."""
+    prop = fm.FontProperties(fname=FONT, size=100)
+    tp = TextPath((0, 0), text, prop=prop)
+    polys = [p for p in tp.to_polygons() if len(p) >= 3]
     if not polys:
-        raise ValueError(f"No polygons for text: {text!r}")
+        raise ValueError(f"no polygons for {text!r}")
 
-    all_pts = np.vstack(polys)
-    minxy = all_pts.min(0)
-    maxxy = all_pts.max(0)
+    pts = np.vstack(polys)
+    minxy, maxxy = pts.min(0), pts.max(0)
     size = maxxy - minxy
-    scale = min(target_w / size[0], target_h / size[1]) * 0.92
+    # Fill width like the original word; slightly shorter height for descenders
+    sx = (target_w * 0.96) / max(size[0], 1e-6)
+    sy = (target_h * 0.88) / max(size[1], 1e-6)
+    scale = min(sx, sy)
+    center = (minxy + maxxy) * 0.5
 
-    out: list[np.ndarray] = []
+    out = []
     for poly in polys:
-        p = (poly - minxy - size / 2) * scale
+        p = (poly - center) * scale
         out.append(p.astype(np.float64))
     return out
 
 
-def _triangulate_polys(polys: list[np.ndarray]) -> tuple[np.ndarray, np.ndarray]:
-    verts_list: list[np.ndarray] = []
-    tris_list: list[np.ndarray] = []
-    offset = 0
+def _point_in_polys(x: float, y: float, polys: list[np.ndarray]) -> bool:
     for poly in polys:
-        v = poly.astype(np.float32)
-        tri = earcut.triangulate_float32(v, np.array([len(v)], dtype=np.uint32))
-        tri = tri.reshape(-1, 3) + offset
-        verts_list.append(v)
-        tris_list.append(tri)
-        offset += len(v)
-    verts = np.vstack(verts_list)
-    tris = np.vstack(tris_list)
-    return verts, tris
+        if MplPath(poly).contains_point((x, y)):
+            return True
+    return False
 
 
-def _build_fill(text: str, ref: BufFile) -> BufFile:
-    ref_pos = ref.attr("position").data
-    target_w = float(np.ptp(ref_pos[:, 0]))
-    target_h = float(np.ptp(ref_pos[:, 1]))
-
-    polys = _text_polys(text, target_w, target_h)
-    verts, tris = _triangulate_polys(polys)
-
-    curveu = (verts[:, 0] - verts[:, 0].min()) / (np.ptp(verts[:, 0]) + 1e-9)
-    pos = np.column_stack([verts, curveu]).astype(np.float32)
-
-    from_list, delta_list = auto_pack_params(pos, 3)
-    pos_attr = Attribute(
-        id="position",
-        component_size=3,
-        storage_type="Uint16Array",
-        needs_pack=True,
-        packed_from=from_list,
-        packed_delta=delta_list,
-        data=pos,
-    )
-    idx_attr = Attribute(
-        id="indices",
-        component_size=1,
-        storage_type="Uint16Array",
-        needs_pack=False,
-        data=tris.reshape(-1).astype(np.uint16),
-    )
-
-    return BufFile(
-        vertex_count=len(pos),
-        index_count=len(tris) * 3,
-        mesh_type=ref.mesh_type,
-        attributes=[idx_attr, pos_attr],
-        extra_meta=dict(ref.extra_meta),
-    )
+def _nearest_on_boundary(x: float, y: float, polys: list[np.ndarray]) -> np.ndarray:
+    """Nearest point on polygon edges to (x, y)."""
+    p = np.array([x, y], dtype=np.float64)
+    best = p
+    best_d = np.inf
+    for poly in polys:
+        for i in range(len(poly)):
+            a = poly[i]
+            b = poly[(i + 1) % len(poly)]
+            seg = b - a
+            seg_len2 = float(np.dot(seg, seg)) + 1e-12
+            t = float(np.clip(np.dot(p - a, seg) / seg_len2, 0.0, 1.0))
+            proj = a + t * seg
+            d = float(np.linalg.norm(proj - p))
+            if d < best_d:
+                best_d = d
+                best = proj
+    return best
 
 
-def _outline_from_fill(fill: BufFile, ref_outline: BufFile, thickness: float = 0.012) -> BufFile:
-    """Build a simple outline mesh by offsetting fill vertices along 2D normals."""
-    pos = fill.attr("position").data
-    idx = fill.attr("indices").data.astype(np.int64).reshape(-1, 3)
+def _remap_xy(
+    xy: np.ndarray,
+    src_bounds: tuple[float, float, float, float],
+    dst_polys: list[np.ndarray],
+) -> np.ndarray:
+    """Proportional horizontal remap + vertical snap to new glyph shapes."""
+    sx0, sx1, sy0, sy1 = src_bounds
+    xs = xy[:, 0]
+    ys = xy[:, 1]
+    t = (xs - sx0) / max(sx1 - sx0, 1e-9)
 
-    # Per-vertex normal via angle bisector from incident edges
-    n_verts = len(pos)
-    accum = np.zeros((n_verts, 2), dtype=np.float64)
-    for tri in idx:
-        for i in range(3):
-            a, b, c = tri[i], tri[(i + 1) % 3], tri[(i + 2) % 3]
-            e1 = pos[b, :2] - pos[a, :2]
-            e2 = pos[c, :2] - pos[a, :2]
-            ln1 = np.linalg.norm(e1)
-            ln2 = np.linalg.norm(e2)
-            if ln1 < 1e-9 or ln2 < 1e-9:
-                continue
-            n1 = np.array([-e1[1], e1[0]]) / ln1
-            n2 = np.array([e2[1], -e2[0]]) / ln2
-            accum[a] += n1 + n2
+  # target horizontal span from layout polys
+    allp = np.vstack(dst_polys)
+    dx0, dx1 = float(allp[:, 0].min()), float(allp[:, 0].max())
+    dy0, dy1 = float(allp[:, 1].min()), float(allp[:, 1].max())
 
-    norms = np.linalg.norm(accum, axis=1, keepdims=True)
-    norms = np.maximum(norms, 1e-9)
-    normals = accum / norms
+    nx = dx0 + t * (dx1 - dx0)
+    # preserve relative vertical position within word band, then snap to surface
+    rel_y = (ys - sy0) / max(sy1 - sy0, 1e-9)
+    ny = dy0 + rel_y * (dy1 - dy0)
 
-    inner = pos.copy()
-    outer = pos.copy()
-    outer[:, :2] += normals * thickness
-  # perimeter ~ word arc length scale stored in OP.z (match ref range)
-    perimeter_val = float(ref_outline.attr("OP").data[:, 2].max())
-    outer[:, 2] = perimeter_val * 0.85
-
-    # id groups by x-cluster (glyph-ish)
-    ids = np.zeros(n_verts, dtype=np.uint16)
-    xbins = np.linspace(inner[:, 0].min(), inner[:, 0].max(), 16)
-    for i in range(len(xbins) - 1):
-        m = (inner[:, 0] >= xbins[i]) & (inner[:, 0] < xbins[i + 1])
-        ids[m] = min(i, 13)
-
-    radius = np.zeros(n_verts, dtype=np.uint8)
-    # corners: vertices with large turning angle get radius 1
-    for v in range(n_verts):
-        neighbors = idx[(idx == v).any(axis=1)]
-        if len(neighbors) < 2:
+    out = np.column_stack([nx, ny])
+    # Pull interior points onto fill; boundary points handled separately
+    for i in range(len(out)):
+        if _point_in_polys(out[i, 0], out[i, 1], dst_polys):
             continue
-        angles = []
-        for tri in neighbors[:6]:
-            others = [t for t in tri if t != v]
-            if len(others) != 2:
-                continue
-            e1 = pos[others[0], :2] - pos[v, :2]
-            e2 = pos[others[1], :2] - pos[v, :2]
-            c = np.dot(e1, e2) / (np.linalg.norm(e1) * np.linalg.norm(e2) + 1e-9)
-            angles.append(np.arccos(np.clip(c, -1, 1)))
-        if angles and min(angles) < np.pi * 0.55:
-            radius[v] = 1
+        out[i] = _nearest_on_boundary(out[i, 0], out[i, 1], dst_polys)
+    return out
 
-    # Outline uses the same triangle topology as the fill mesh.
-    outline_idx = idx.reshape(-1).astype(np.uint16)
 
-    def _packed_attr(id_: str, data: np.ndarray, storage: str) -> Attribute:
-        if id_ in ("id", "radius"):
-            return Attribute(
-                id=id_,
-                component_size=1,
-                storage_type=storage,
-                needs_pack=False,
-                data=data,
-            )
-        from_list, delta_list = auto_pack_params(data, data.shape[1] if data.ndim > 1 else 1)
-        return Attribute(
-            id=id_,
-            component_size=data.shape[1] if data.ndim > 1 else 1,
-            storage_type=storage,
-            needs_pack=True,
-            packed_from=from_list,
-            packed_delta=delta_list,
-            data=data,
-        )
+def _warp_fill(text: str, ref: BufFile) -> BufFile:
+    ref_pos = ref.attr("position").data.copy()
+    sx0, sx1 = float(ref_pos[:, 0].min()), float(ref_pos[:, 0].max())
+    sy0, sy1 = float(ref_pos[:, 1].min()), float(ref_pos[:, 1].max())
+    target_w, target_h = sx1 - sx0, sy1 - sy0
 
-    attrs = [
-        _packed_attr("OP", outer.astype(np.float32), "Int16Array"),
-        Attribute(id="id", component_size=1, storage_type="Uint16Array", needs_pack=False, data=ids),
-        Attribute(
-            id="indices",
-            component_size=1,
-            storage_type="Uint16Array",
-            needs_pack=False,
-            data=outline_idx.astype(np.uint16),
-        ),
-        _packed_attr("position", inner.astype(np.float32), "Uint16Array"),
-        Attribute(id="radius", component_size=1, storage_type="Uint8Array", needs_pack=False, data=radius),
-    ]
+    polys = _layout_polys(text, target_w, target_h)
+    new_xy = _remap_xy(ref_pos[:, :2], (sx0, sx1, sy0, sy1), polys)
 
-    return BufFile(
-        vertex_count=n_verts,
-        index_count=len(outline_idx),
-        mesh_type=ref_outline.mesh_type,
-        attributes=attrs,
-        extra_meta=dict(ref_outline.extra_meta),
-    )
+    out = ref_pos.copy()
+    out[:, :2] = new_xy
+    # Keep original curveu (position.z) — encodes peel timing along strokes
+
+    pos_attr = ref.attr("position")
+    from_list, delta_list = auto_pack_params(out, 3)
+    pos_attr.data = out.astype(np.float32)
+    pos_attr.packed_from = from_list
+    pos_attr.packed_delta = delta_list
+
+    return ref
+
+
+def _warp_outline(text: str, ref: BufFile, fill_bounds) -> BufFile:
+    inner = ref.attr("position").data.copy()
+    outer = ref.attr("OP").data.copy()
+    src_bounds = fill_bounds
+
+    polys = _layout_polys(text, src_bounds[2], src_bounds[3])
+    inner[:, :2] = _remap_xy(inner[:, :2], src_bounds, polys)
+
+    # Preserve original inner→outer offset vectors (thickness + peel normals)
+    offset = outer[:, :2] - ref.attr("position").data[:, :2]
+    outer[:, :2] = inner[:, :2] + offset
+    # Keep OP.z (perimeter), id, radius, indices unchanged
+
+    for attr in ref.attributes:
+        if attr.id == "position":
+            f, d = auto_pack_params(inner, 3)
+            attr.data = inner.astype(np.float32)
+            attr.packed_from, attr.packed_delta = f, d
+        elif attr.id == "OP":
+            f, d = auto_pack_params(outer, 3)
+            attr.data = outer.astype(np.float32)
+            attr.packed_from, attr.packed_delta = f, d
+
+    return ref
 
 
 def main() -> None:
@@ -223,25 +177,33 @@ def main() -> None:
     parser.add_argument("text", nargs="?", default="hardik verma")
     args = parser.parse_args()
 
-    text_path = ROOT / "public/models/sustainability_text.buf"
+    fill_path = ROOT / "public/models/sustainability_text.buf"
     outline_path = ROOT / "public/models/sustainability_text_outline.buf"
+    ref_fill_path, ref_outline_path = _ref_paths()
 
-    ref_fill = parse(text_path)
-    ref_outline = parse(outline_path)
+    ref_fill = parse(ref_fill_path)
+    ref_outline = parse(ref_outline_path)
 
-    fill = _build_fill(args.text, ref_fill)
-    outline = _outline_from_fill(fill, ref_outline)
+    orig_fill_pos = ref_fill.attr("position").data.copy()
+    fill_bounds = (
+        float(orig_fill_pos[:, 0].min()),
+        float(orig_fill_pos[:, 0].max()),
+        float(orig_fill_pos[:, 1].min()),
+        float(orig_fill_pos[:, 1].max()),
+    )
 
-    backup_suffix = ".orig-sustainability"
-    for p in (text_path, outline_path):
-        bak = p.with_suffix(p.suffix + backup_suffix)
-        if not bak.exists():
+    fill = _warp_fill(args.text, ref_fill)
+    outline = _warp_outline(args.text, ref_outline, fill_bounds)
+
+    for p in (fill_path, outline_path):
+        bak = p.with_suffix(p.suffix + ".orig-sustainability")
+        if not bak.exists() and p.exists():
             bak.write_bytes(p.read_bytes())
 
-    text_path.write_bytes(serialize(fill))
+    fill_path.write_bytes(serialize(fill))
     outline_path.write_bytes(serialize(outline))
-    print(f"Wrote {text_path} ({fill.vertex_count} verts)")
-    print(f"Wrote {outline_path} ({outline.vertex_count} verts)")
+    print(f"Warped fill -> {fill_path} ({fill.vertex_count} verts)")
+    print(f"Warped outline -> {outline_path} ({outline.vertex_count} verts)")
 
 
 if __name__ == "__main__":
