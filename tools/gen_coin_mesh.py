@@ -37,7 +37,11 @@ from buf_codec import Attribute, BufFile, auto_pack_params, serialize
 
 RADIUS = 0.04493
 THICKNESS = 0.005
-Y_BOTTOM = 0.0
+
+SDF_BODY_TOP_Y = 0.0172
+ESCAPE_MARGIN = 0.0008
+
+Y_BOTTOM = SDF_BODY_TOP_Y + ESCAPE_MARGIN
 Y_TOP = Y_BOTTOM + THICKNESS
 
 UV_SCALE = 1.0 / 3.0
