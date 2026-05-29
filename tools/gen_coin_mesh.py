@@ -38,12 +38,10 @@ from buf_codec import Attribute, BufFile, auto_pack_params, serialize
 RADIUS = 0.04493
 THICKNESS = 0.005
 
-# Lift above cork-bowl SDF in coasterFrag (fixes dark-face shadow on flat coin mesh).
-# Pair with transform animation buffers — do NOT run shift_coaster_anims.py.
-SDF_BODY_TOP_Y = 0.0172
-ESCAPE_MARGIN = 0.0008
-Y_BOTTOM = SDF_BODY_TOP_Y + ESCAPE_MARGIN
-Y_TOP = Y_BOTTOM + THICKNESS
+# Default pose matches transform-to-hardik-portfolio (flush on desk).
+# Lifting Y clears the cork-bowl SDF shadow but can look blown-out bright in hand/AI scenes.
+Y_BOTTOM = 0.0
+Y_TOP = THICKNESS
 
 UV_SCALE = 1.0 / 3.0
 
