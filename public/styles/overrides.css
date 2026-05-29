@@ -23,7 +23,26 @@
   visibility: hidden;
 }
 
-/* Glass UNSW / WAM card. Hidden but bounding box preserved for parallax. */
+/*
+ * Glass UNSW / WAM card — content hidden above; the frosted panel itself is
+ * drawn by the engine's blurBox post-effect, which anchors to #hero-card's
+ * getBoundingClientRect(). Collapse the card off-screen so blurBox renders a
+ * 1×1 box (invisible). #hero-card-inner keeps normal flow for any parallax
+ * measurements on children.
+ */
+#hero-card {
+  position: fixed !important;
+  left: -10000px !important;
+  top: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  max-height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 #hero-card,
 #hero-card * {
   visibility: hidden !important;
@@ -42,4 +61,13 @@
 #video-overlay,
 #video-overlay-cursor {
   display: none !important;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * SUSTAINABILITY (DOM overlay — 3D bark/peel meshes are still original)
+ * ──────────────────────────────────────────────────────────────────────── */
+
+#sustainability-title-main {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }

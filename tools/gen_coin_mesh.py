@@ -38,11 +38,10 @@ from buf_codec import Attribute, BufFile, auto_pack_params, serialize
 RADIUS = 0.04493
 THICKNESS = 0.005
 
-SDF_BODY_TOP_Y = 0.0172
-ESCAPE_MARGIN = 0.0008
-
-Y_BOTTOM = SDF_BODY_TOP_Y + ESCAPE_MARGIN
-Y_TOP = Y_BOTTOM + THICKNESS
+# Sit flush on the desk in local space (matches transform-to-hardik-portfolio).
+# Do NOT lift into the cork-bowl SDF band — that pushes the coin through the table.
+Y_BOTTOM = 0.0
+Y_TOP = THICKNESS
 
 UV_SCALE = 1.0 / 3.0
 
