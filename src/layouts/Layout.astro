@@ -9,8 +9,8 @@ interface Props {
 }
 
 const {
-  title = "Hardik Verma — Software Engineer",
-  description = "Hardik Verma — Software Engineer (UNSW). AI agents, cloud microservices, full-stack. Built for scale. Engineered for impact.",
+  title = "Hardik Verma · Software Engineer",
+  description = "Hardik Verma. Software Engineer (UNSW). AI agents, cloud microservices, full-stack systems that hold up under load.",
 } = Astro.props;
 ---
 
@@ -50,9 +50,11 @@ const {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content="/meta/og_image.png" />
 
-    <!-- The original bundled CSS & hoisted JS — Astro will fingerprint these
-         automatically once integrated; for now we reference the originals. -->
+    <!-- The original bundled engine CSS & JS. Do not edit. -->
     <link rel="stylesheet" href="/scripts/index.css" />
+    <!-- Portfolio-specific visual overrides. Loaded AFTER index.css so its
+         rules win the cascade. Engine bindings are untouched. -->
+    <link rel="stylesheet" href="/styles/overrides.css" />
     <script type="module" src="/scripts/main.js"></script>
   </head>
   <body>
