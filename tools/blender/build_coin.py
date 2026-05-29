@@ -188,14 +188,22 @@ def add_perimeter_dots(radius: float, dot_r: float, z: float, count: int = 36):
 
 
 def make_gold_material(name: str = "Gold") -> bpy.types.Material:
-    """Pure-diffuse gold for the albedo bake.
+    """Pure emission gold for the albedo bake.
 
-    Lambertian shader, no metallic, no specular, no anisotropy. Under a
-    uniform white dome this gives a near-constant base colour on flat
-    surfaces; recessed areas darken via ambient occlusion only. The
-    engine's runtime shader later adds metallic specular based on the
-    real camera + light positions, so highlights move correctly with the
-    view instead of being locked into the texture.
+    Confirmed from the engine's coasterFrag shader:
+
+        albedo = pow(map.rgb, vec3(2.0));
+
+    Anything we bake into DIFF is squared, so any AO darkening becomes
+    a dramatic shadow. The shader uses HEIGHT (map.w) purely as a bump
+    map (via dFdx/dFdy gradient + perturbNormalArb) - that's what
+    actually carves the embossed H + ring relief into the lighting at
+    runtime, from any camera angle. So DIFF should be DEAD UNIFORM:
+    no H, no rings, no AO, no shading. Just one flat gold colour.
+
+    Value is pre-gamma-corrected so that after the shader's pow(., 2.0)
+    the perceived sRGB colour reads as a rich amber gold rather than
+    near-black.
     """
     mat = bpy.data.materials.new(name=name)
     mat.use_nodes = True
@@ -206,12 +214,12 @@ def make_gold_material(name: str = "Gold") -> bpy.types.Material:
     out = nt.nodes.new("ShaderNodeOutputMaterial")
     out.location = (400, 0)
 
-    diffuse = nt.nodes.new("ShaderNodeBsdfDiffuse")
-    diffuse.location = (0, 0)
-    diffuse.inputs["Color"].default_value = (0.78, 0.42, 0.04, 1.0)
-    diffuse.inputs["Roughness"].default_value = 0.0
+    emit = nt.nodes.new("ShaderNodeEmission")
+    emit.location = (0, 0)
+    emit.inputs["Color"].default_value = (0.92, 0.72, 0.40, 1.0)
+    emit.inputs["Strength"].default_value = 1.0
 
-    nt.links.new(diffuse.outputs["BSDF"], out.inputs["Surface"])
+    nt.links.new(emit.outputs["Emission"], out.inputs["Surface"])
     return mat
 
 
@@ -239,8 +247,8 @@ def make_height_material() -> bpy.types.Material:
 
     map_range = nt.nodes.new("ShaderNodeMapRange")
     map_range.location = (-300, 0)
-    map_range.inputs["From Min"].default_value = -0.0030
-    map_range.inputs["From Max"].default_value =  0.0030
+    map_range.inputs["From Min"].default_value = 0.00080
+    map_range.inputs["From Max"].default_value = 0.00220
     map_range.inputs["To Min"].default_value = 0.0
     map_range.inputs["To Max"].default_value = 1.0
     map_range.clamp = True
