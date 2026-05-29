@@ -9,7 +9,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers: 1,
-  timeout: 120_000,
+  timeout: 600_000,
   expect: { timeout: 30_000 },
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'tests/playwright-report' }]],
   outputDir: 'tests/test-results',

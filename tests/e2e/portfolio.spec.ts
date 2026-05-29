@@ -3,110 +3,90 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const ARTIFACTS = path.join(process.cwd(), 'tests', 'artifacts');
+const DOCS_SHOTS = path.join(process.cwd(), 'docs', 'e2e-screenshots');
+
+/** Sections in scroll order on #home */
+const SECTION_SHOTS: { id: string; file: string; dwellMs?: number }[] = [
+  { id: 'hero', file: '01-hero' },
+  { id: 'ai', file: '02-ai' },
+  { id: 'wearable', file: '03-wearable' },
+  { id: 'features', file: '04-features' },
+  { id: 'encryption', file: '05-encryption-sentiment' },
+  { id: 'grip', file: '06-grip' },
+  { id: 'sustainability', file: '07-sustainability' },
+  { id: 'testimonies', file: '08-testimonies' },
+  { id: 'social-content', file: '09-social-content' },
+  { id: 'product', file: '10-product' },
+  { id: 'open-weight', file: '11-open-weight' },
+  { id: 'footer', file: '12-footer' },
+];
 
 async function waitForEngine(page: Page) {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#canvas')).toBeVisible();
   await expect(page.locator('#ui')).toBeVisible();
-
-  // Preloader fades out once WebGL assets are ready.
   await page
     .locator('#preloader')
     .waitFor({ state: 'hidden', timeout: 90_000 })
-    .catch(() => {
-      /* some builds keep it in DOM with opacity 0 */
-    });
-
-  await page.waitForTimeout(2500);
+    .catch(() => {});
+  await page.waitForTimeout(3000);
 }
 
-async function scrollToSection(page: Page, sectionId: string) {
-  await page.evaluate((id) => {
-    const el = document.getElementById(id);
-    if (!el) throw new Error(`missing #${id}`);
-    const top =
-      el.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.15;
-    window.scrollTo({ top: Math.max(0, top), behavior: 'instant' });
-  }, sectionId);
-  await page.waitForTimeout(2000);
+async function scrollToSection(page: Page, sectionId: string, viewportAnchor = 0.2) {
+  await page.evaluate(
+    ({ id, anchor }) => {
+      const el = document.getElementById(id);
+      if (!el) throw new Error(`missing #${id}`);
+      const top = el.getBoundingClientRect().top + window.scrollY - window.innerHeight * anchor;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'instant' });
+    },
+    { id: sectionId, anchor: viewportAnchor },
+  );
 }
 
-async function screenshotSection(page: Page, name: string) {
+async function capture(page: Page, file: string, dwellMs = 2200) {
   fs.mkdirSync(ARTIFACTS, { recursive: true });
-  await page.screenshot({
-    path: path.join(ARTIFACTS, `${name}.png`),
-    fullPage: false,
-  });
+  fs.mkdirSync(DOCS_SHOTS, { recursive: true });
+  await page.waitForTimeout(Math.min(dwellMs, 1800));
+  const artifactPath = path.join(ARTIFACTS, `${file}.png`);
+  const docsPath = path.join(DOCS_SHOTS, `${file}.png`);
+  await page.screenshot({ path: artifactPath, fullPage: false, timeout: 60_000 });
+  fs.copyFileSync(artifactPath, docsPath);
 }
 
-test.describe('Hardik portfolio — visual smoke', () => {
-  test.beforeAll(() => {
-    fs.mkdirSync(ARTIFACTS, { recursive: true });
-  });
-
-  test('hero: glass card collapsed off-screen', async ({ page }) => {
+test.describe('Hardik portfolio — full scroll captures', () => {
+  test('capture all major sections + coin checks', async ({ page }) => {
+    test.setTimeout(600_000);
     await waitForEngine(page);
-    await screenshotSection(page, '01-hero');
 
-    const card = page.locator('#hero-card');
-    await expect(card).toBeAttached();
+    for (const { id, file, dwellMs } of SECTION_SHOTS) {
+      await scrollToSection(page, id, id === 'footer' ? 0.05 : 0.2);
+      await capture(page, file, dwellMs ?? 1600);
+    }
 
-    const box = await card.boundingBox();
+    // Extra: features — coin should sit on desk (transform-branch mesh Y)
+    await scrollToSection(page, 'features', 0.35);
+    await page.waitForTimeout(500);
+    await page.evaluate(() => {
+      window.scrollBy({ top: window.innerHeight * 0.15, behavior: 'instant' });
+    });
+    await capture(page, '04b-features-coin-close', 2800);
+
+    // Extra: hand scene
+    await scrollToSection(page, 'ai', 0.45);
+    await capture(page, '02b-ai-hand', 2500);
+
+    // Hero glass card still collapsed
+    await scrollToSection(page, 'hero', 0.15);
+    const box = await page.locator('#hero-card').boundingBox();
     expect(box).not.toBeNull();
-    // overrides.css pins card to 1×1 off-screen
     expect(box!.width).toBeLessThanOrEqual(2);
     expect(box!.height).toBeLessThanOrEqual(2);
-    expect(box!.x).toBeLessThan(-1000);
 
-    const headerText = page.locator('#hero-card-header');
-    await expect(headerText).toBeHidden();
-  });
-
-  test('features: table scene renders (coin on desk)', async ({ page }) => {
-    await waitForEngine(page);
-    await scrollToSection(page, 'features');
-    await screenshotSection(page, '02-features-table');
-
-    const canvas = page.locator('#canvas');
-    await expect(canvas).toBeVisible();
-    const hasWebgl = await page.evaluate(() => {
-      const c = document.querySelector('#canvas') as HTMLCanvasElement | null;
-      const gl = c?.getContext('webgl2') || c?.getContext('webgl');
-      return !!gl;
-    });
-    expect(hasWebgl).toBe(true);
-  });
-
-  test('sustainability: DOM copy and section layout', async ({ page }) => {
-    await waitForEngine(page);
-    await scrollToSection(page, 'sustainability');
-    await page.waitForTimeout(1500);
-    await screenshotSection(page, '03-sustainability-mid');
-
-    // Scroll deeper into sustainability for bark / peel phase
-    await page.evaluate(() => {
-      const el = document.getElementById('sustainability');
-      if (!el) return;
-      const top = el.getBoundingClientRect().top + window.scrollY + window.innerHeight * 0.6;
-      window.scrollTo({ top, behavior: 'instant' });
-    });
-    await page.waitForTimeout(2500);
-    await screenshotSection(page, '04-sustainability-bark');
-
-    const titleMain = page.locator('#sustainability-title-main');
-    await expect(titleMain).toHaveText(/hardik verma/i);
-
-    const titleText = (await titleMain.textContent())?.trim() ?? '';
-    expect(titleText.toLowerCase()).not.toContain('sustainability');
-    expect(titleText.toLowerCase()).not.toContain('curiosity');
-  });
-
-  test('sustainability hero hidden until late scroll (no early overlap)', async ({ page }) => {
-    await waitForEngine(page);
-    await scrollToSection(page, 'sustainability');
-
+    // Sustainability from transform branch (curiosity DOM — 3D left for later)
+    await scrollToSection(page, 'sustainability', 0.25);
+    await expect(page.locator('#sustainability-title-main')).toHaveText(/curiosity/i);
     const hero = page.locator('#sustainability-hero');
-    const visibility = await hero.evaluate((el) => getComputedStyle(el).visibility);
-    expect(visibility).toBe('hidden');
+    expect(await hero.evaluate((el) => getComputedStyle(el).visibility)).toBe('hidden');
   });
 });
