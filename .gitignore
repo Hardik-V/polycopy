@@ -26,6 +26,7 @@ pnpm-debug.log*
 # Blender binary + intermediate renders + diagnostic screenshots.
 # These are produced locally / by the Blender pipeline; the final
 # textures live in public/textures/ and are committed.
+tools/__pycache__/
 tools/bin/
 tools/out/
 tools/screenshots/
