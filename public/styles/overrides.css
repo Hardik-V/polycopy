@@ -1,0 +1,79 @@
+/*
+ * overrides.css
+ *
+ * Loaded AFTER public/scripts/index.css in Layout.astro.
+ *
+ * This file exists so we can hide / restyle portfolio-specific UI without
+ * editing the compiled engine CSS. The 3D engine reads DOM by id/class and
+ * still binds to every element listed here - we just keep them invisible.
+ *
+ * RULE: never use display:none on engine-bound elements that the JS measures
+ *       for layout (e.g. #hero-card-inner is parallax-animated). Prefer
+ *       visibility:hidden + zero opacity + pointer-events:none so the engine
+ *       still gets a real bounding box.
+ */
+
+/* ────────────────────────────────────────────────────────────────────────
+ * HERO
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/* "Built for scale. Engineered for impact." tagline — empty wrapper still
+ * exists in the DOM so the engine can layout-measure it, but nothing renders. */
+#hero-top-tagline {
+  visibility: hidden;
+}
+
+/*
+ * Glass UNSW / WAM card — content hidden above; the frosted panel itself is
+ * drawn by the engine's blurBox post-effect, which anchors to #hero-card's
+ * getBoundingClientRect(). Collapse the card off-screen so blurBox renders a
+ * 1×1 box (invisible). #hero-card-inner keeps normal flow for any parallax
+ * measurements on children.
+ */
+#hero-card {
+  position: fixed !important;
+  left: -10000px !important;
+  top: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  max-height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#hero-card,
+#hero-card * {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Vimeo "PLAY" tile in the hero — fully removed from layout because nothing
+ * else depends on its position. */
+#hero-video-wrapper {
+  display: none !important;
+}
+
+/* The fullscreen video overlay machinery (outside #ui). Nothing depends on
+ * its layout; safe to hide entirely. */
+#video-overlay,
+#video-overlay-cursor {
+  display: none !important;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * FOOTER
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/* Empty slot the engine may decorate; keep in DOM for bindings, hide visually. */
+#footer-lusion-logo {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+

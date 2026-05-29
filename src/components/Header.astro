@@ -1,14 +1,14 @@
 ---
 // Header.astro
 // Contains: #site-header (nav), mobile menu, and the #site-footer scroll indicator.
-// All ids, classes, and data-* attributes are preserved verbatim — the JS engine
+// All ids, classes, and data-* attributes are preserved verbatim - the JS engine
 // queries them by exact string match.
 ---
 
 <!-- ─── Site Header ──────────────────────────────────────────────────────── -->
 <header id="site-header" class="link-header">
 
-  <!-- Logo — links back to #hero, data-width drives the JS resize logic -->
+  <!-- Logo - links back to #hero, data-width drives the JS resize logic -->
   <a id="site-header-logo" data-width="94" href="#hero">
     <div>
       <svg viewBox="0 0 94 21">
@@ -21,13 +21,13 @@
   <nav id="site-header-nav" class="desktop-only">
     <ul>
       <li class="is-flipper" data-id="hero">
-        <a class="is-flipper-target" href="#hero">Overview</a>
+        <a class="is-flipper-target" href="#hero">About</a>
       </li>
       <li class="is-flipper" data-id="features">
-        <a class="is-flipper-target" href="#features">Capabilities</a>
+        <a class="is-flipper-target" href="#features">Skills</a>
       </li>
       <li class="is-flipper" data-id="testimonies">
-        <a class="is-flipper-target" href="#testimonies">Integrations</a>
+        <a class="is-flipper-target" href="#testimonies">Recommendations</a>
       </li>
       <li class="is-flipper" data-id="footer">
         <a class="is-flipper-target" href="#contact">Contact</a>
@@ -40,14 +40,14 @@
   <div id="site-header-mobile-menu" class="mobile-only">
     <div></div>
     <ul>
-      <li data-id="hero"><a href="#hero">Overview</a></li>
-      <li data-id="features"><a href="#features">Capabilities</a></li>
-      <li data-id="testimonies"><a href="#testimonies">Integrations</a></li>
+      <li data-id="hero"><a href="#hero">About</a></li>
+      <li data-id="features"><a href="#features">Skills</a></li>
+      <li data-id="testimonies"><a href="#testimonies">Recommendations</a></li>
       <li data-id="footer"><a href="#contact">Contact</a></li>
     </ul>
     <div id="site-header-mobile-bottom">
-      <div class="sub2">general enquiries:</div>
-      <a class="sub1" href="mailto:hello@lusion.co" target="_blank">hello@lusion.co</a>
+      <div class="sub2">get in touch:</div>
+      <a class="sub1" href="mailto:hardikverma2005@gmail.com" target="_blank">hardikverma2005@gmail.com</a>
     </div>
   </div>
 
