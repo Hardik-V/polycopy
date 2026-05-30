@@ -1,37 +1,3 @@
-"""
-buf_codec.py
-
-Parser + serializer for the Lusion .buf 3D-asset format used in
-public/models/. Reverse-engineered from public/scripts/main.js.
-
-File layout:
-    [uint32 LE header_length]
-    [JSON header of header_length bytes]
-    [concatenated attribute payloads, in declaration order]
-
-Each attribute in the JSON header has:
-    id              : str          e.g. "position", "normal", "uv", "indices", "Cd", "side", "orient", "scale"
-    componentSize   : int          components per element (1, 2, 3, 4)
-    storageType     : str          one of "Int8Array", "Uint8Array", "Int16Array",
-                                   "Uint16Array", "Float32Array"
-    needsPack       : bool
-    packedComponents: list?        only if needsPack — one entry per component:
-                                       { "from": float, "delta": float }
-
-Element count for an attribute is:
-    indexCount   if id == "indices"
-    vertexCount  otherwise
-
-Engine's unpack formula (per component):
-    F      = 1 << (bytesPerElement * 8)        # 256 or 65536
-    offset = F * 0.5  if storageType starts with "Int"  else  0
-    scale  = 1 / (F - 1)
-    actual = (raw + offset) * scale * delta + from
-
-Our pack formula is the algebraic inverse:
-    raw    = round((actual - from) / delta * (F - 1)) - offset
-"""
-
 from __future__ import annotations
 
 import json
@@ -42,7 +8,6 @@ from typing import Any
 
 import numpy as np
 
-
 STORAGE_INFO: dict[str, tuple[type, int, bool]] = {
     "Int8Array":    (np.int8,    1, True),
     "Uint8Array":   (np.uint8,   1, False),
@@ -50,7 +15,6 @@ STORAGE_INFO: dict[str, tuple[type, int, bool]] = {
     "Uint16Array":  (np.uint16,  2, False),
     "Float32Array": (np.float32, 4, False),
 }
-
 
 @dataclass
 class Attribute:
@@ -88,7 +52,6 @@ class Attribute:
             ]
         return meta
 
-
 @dataclass
 class BufFile:
     vertex_count: int
@@ -106,7 +69,6 @@ class BufFile:
     def count_for(self, attr: Attribute) -> int:
         return self.index_count if attr.id == "indices" else self.vertex_count
 
-
 def _unpack(raw: np.ndarray, attr: Attribute) -> np.ndarray:
     if not attr.needs_pack:
         return raw.astype(np.float32) if attr.storage_type != "Float32Array" else raw
@@ -121,7 +83,6 @@ def _unpack(raw: np.ndarray, attr: Attribute) -> np.ndarray:
         out[:, c] = ((raw_f[:, c] + offset) * scale * attr.packed_delta[c]
                      + attr.packed_from[c]).astype(np.float32)
     return out.reshape(-1) if attr.component_size == 1 else out
-
 
 def _pack(values: np.ndarray, attr: Attribute) -> np.ndarray:
     if not attr.needs_pack:
@@ -149,7 +110,6 @@ def _pack(values: np.ndarray, attr: Attribute) -> np.ndarray:
         info = np.iinfo(attr.dtype)
         out = np.clip(out, info.min, info.max)
     return out.astype(attr.dtype).reshape(-1)
-
 
 def parse(path: str | Path) -> BufFile:
     data = Path(path).read_bytes()
@@ -190,7 +150,6 @@ def parse(path: str | Path) -> BufFile:
 
     return buf
 
-
 def serialize(buf: BufFile) -> bytes:
     meta: dict[str, Any] = {
         "vertexCount": int(buf.vertex_count),
@@ -201,7 +160,7 @@ def serialize(buf: BufFile) -> bytes:
     for k, v in buf.extra_meta.items():
         meta[k] = v
 
-    header_json = json.dumps(meta, separators=(", ", ": "))
+    header_json = json.dumps(meta, separators=(",", ":"))
     header_bytes = header_json.encode("utf-8")
 
     body_offset = 4 + len(header_bytes)
@@ -228,50 +187,20 @@ def serialize(buf: BufFile) -> bytes:
 
     return struct.pack("<I", len(header_bytes)) + header_bytes + bytes(body)
 
-
 def auto_pack_params(values: np.ndarray, component_size: int) -> tuple[list[float], list[float]]:
-    """Compute (from, delta) per component from raw float data."""
     v = np.asarray(values, dtype=np.float64).reshape(-1, component_size)
     mins = v.min(axis=0)
     maxs = v.max(axis=0)
     return mins.tolist(), (maxs - mins).tolist()
 
-
-def _roundtrip_test(path: str) -> None:
-    print(f"--- roundtrip: {path}")
-    orig = parse(path)
-    serialized = serialize(orig)
-    reparsed = BufFile(
-        vertex_count=orig.vertex_count,
-        index_count=orig.index_count,
-        mesh_type=orig.mesh_type,
-        attributes=orig.attributes,
-    )
-    reparsed2 = parse(path)
-    out_path = Path(path).with_suffix(".roundtrip.buf")
-    out_path.write_bytes(serialized)
-    re = parse(out_path)
-    for a, b in zip(orig.attributes, re.attributes):
-        if a.data is None or b.data is None:
-            continue
-        if a.data.dtype.kind == "f":
-            diff = np.max(np.abs(a.data.astype(np.float64) - b.data.astype(np.float64)))
-            print(f"  {a.id:10s} max abs diff = {diff:.6g}")
-        else:
-            diff = int(np.max(np.abs(a.data.astype(np.int64) - b.data.astype(np.int64))))
-            print(f"  {a.id:10s} max abs diff = {diff}")
-    out_path.unlink()
-
 def export_to_obj(buf: BufFile, out_path: str):
-    """Converts the parsed BufFile into a standard .obj 3D model file."""
     pos_attr = buf.attr("position")
     idx_attr = buf.attr("indices")
 
     if not pos_attr or not idx_attr:
-        print("Error: Missing position or index data.")
+        print(f"Error: Missing position or index data in {out_path}")
         return
 
-    # Group the flat arrays into 3D coordinates (X, Y, Z) and triangles
     vertices = pos_attr.data.reshape(-1, 3)
     indices = idx_attr.data.reshape(-1, 3)
 
@@ -279,22 +208,161 @@ def export_to_obj(buf: BufFile, out_path: str):
     
     with open(out_path, 'w') as f:
         f.write("# Exported from .buf format\n")
-        
-        # Write vertices (v x y z)
         for v in vertices:
             f.write(f"v {v[0]:.6f} {v[1]:.6f} {v[2]:.6f}\n")
-            
-        # Write faces (f v1 v2 v3). Note: OBJ files are 1-indexed!
         for face in indices:
             f.write(f"f {face[0]+1} {face[1]+1} {face[2]+1}\n")
             
     print("Export complete!")
 
-# --- Replace the bottom of your script with this to run it ---
+def import_from_obj(obj_path: str) -> BufFile:
+    """Reads a .obj file (with normals and UVs) and constructs a BufFile."""
+    raw_v, raw_vt, raw_vn = [], [], []
+    out_v, out_vt, out_vn, out_indices = [], [], [], []
+    
+    # OBJ files can have independent indices for pos/uv/normal. 
+    # WebGL requires them unified, so we map them here.
+    vertex_map = {}
+    
+    with open(obj_path, 'r') as f:
+        for line in f:
+            if line.startswith('v '):
+                raw_v.append([float(x) for x in line.split()[1:4]])
+            elif line.startswith('vt '):
+                raw_vt.append([float(x) for x in line.split()[1:3]])
+            elif line.startswith('vn '):
+                raw_vn.append([float(x) for x in line.split()[1:4]])
+            elif line.startswith('f '):
+                parts = line.split()[1:]
+                face_indices = []
+                for p in parts[:3]: # Ensure we only read 3 points (triangles)
+                    vals = p.split('/')
+                    # FIX: Cast to float first to handle weird .0 formats, then int
+                    v_idx = int(float(vals[0])) - 1
+                    vt_idx = int(float(vals[1])) - 1 if len(vals) > 1 and vals[1] else -1
+                    vn_idx = int(float(vals[2])) - 1 if len(vals) > 2 and vals[2] else -1
+                    
+                    key = (v_idx, vt_idx, vn_idx)
+                    if key not in vertex_map:
+                        vertex_map[key] = len(out_v)
+                        out_v.append(raw_v[v_idx])
+                        out_vt.append(raw_vt[vt_idx] if vt_idx >= 0 else [0.0, 0.0])
+                        out_vn.append(raw_vn[vn_idx] if vn_idx >= 0 else [0.0, 1.0, 0.0])
+                        
+                    face_indices.append(vertex_map[key])
+                out_indices.extend(face_indices)
+                
+    # Convert to flat numpy arrays
+    pos_data = np.array(out_v, dtype=np.float32).flatten()
+    uv_data = np.array(out_vt, dtype=np.float32).flatten()
+    norm_data = np.array(out_vn, dtype=np.float32).flatten()
+    idx_data = np.array(out_indices, dtype=np.uint32)
+    cd_data = np.ones(len(out_v), dtype=np.float32) # Default color to 1.0 everywhere
+    
+    # Calculate Bounding Box and Sphere for the engine
+    v_reshaped = pos_data.reshape(-1, 3)
+    vmin = v_reshaped.min(axis=0)
+    vmax = v_reshaped.max(axis=0)
+    center = (vmin + vmax) / 2.0
+    radius = float(np.max(np.linalg.norm(v_reshaped - center, axis=1)))
+    
+    bounds = {
+        "boundingBox": {"min": vmin.tolist(), "max": vmax.tolist()},
+        "boundingSphere": {"center": center.tolist(), "radius": radius}
+    }
+    
+    # Calculate packing parameters
+    p_from, p_delta = auto_pack_params(pos_data, 3)
+    n_from, n_delta = auto_pack_params(norm_data, 3)
+    u_from, u_delta = auto_pack_params(uv_data, 2)
+    c_from, c_delta = auto_pack_params(cd_data, 1)
+
+    # Prevent division by zero if an attribute is entirely uniform
+    n_delta = [max(d, 1e-6) for d in n_delta]
+    u_delta = [max(d, 1e-6) for d in u_delta]
+    p_delta = [max(d, 1e-6) for d in p_delta]
+    c_delta = [max(d, 1e-6) for d in c_delta]
+
+    # Build the 5 required attributes exactly as the engine expects
+    attributes = [
+        Attribute(id="Cd", component_size=1, storage_type="Int16Array", needs_pack=True, packed_from=c_from, packed_delta=c_delta, data=cd_data),
+        Attribute(id="indices", component_size=1, storage_type="Uint16Array" if len(out_v) <= 65535 else "Uint32Array", needs_pack=False, data=idx_data),
+        Attribute(id="normal", component_size=3, storage_type="Uint16Array", needs_pack=True, packed_from=n_from, packed_delta=n_delta, data=norm_data),
+        Attribute(id="position", component_size=3, storage_type="Uint16Array", needs_pack=True, packed_from=p_from, packed_delta=p_delta, data=pos_data),
+        Attribute(id="uv", component_size=2, storage_type="Int16Array", needs_pack=True, packed_from=u_from, packed_delta=u_delta, data=uv_data),
+    ]
+    
+    return BufFile(
+        vertex_count=len(out_v),
+        index_count=len(idx_data),
+        attributes=attributes,
+        extra_meta=bounds
+    )
+    
+    with open(obj_path, 'r') as f:
+        for line in f:
+            if line.startswith('v '):
+                parts = line.split()
+                vertices.extend([float(parts[1]), float(parts[2]), float(parts[3])])
+            elif line.startswith('f '):
+                parts = line.split()
+                indices.extend([int(parts[1].split('/')[0]) - 1, 
+                                int(parts[2].split('/')[0]) - 1, 
+                                int(parts[3].split('/')[0]) - 1])
+                
+    pos_data = np.array(vertices, dtype=np.float32)
+    idx_data = np.array(indices, dtype=np.uint16)
+    
+    v_reshaped = pos_data.reshape(-1, 3)
+    vmin = v_reshaped.min(axis=0)
+    vmax = v_reshaped.max(axis=0)
+    center = (vmin + vmax) / 2.0
+    radius = np.max(np.linalg.norm(v_reshaped - center, axis=1))
+    
+    bounds = {
+        "boundingBox": {"min": vmin.tolist(), "max": vmax.tolist()},
+        "boundingSphere": {"center": center.tolist(), "radius": float(radius)}
+    }
+    
+    mins, deltas = auto_pack_params(pos_data, 3)
+    
+    pos_attr = Attribute(
+        id="position", component_size=3, storage_type="Uint16Array",
+        needs_pack=True, packed_from=mins, packed_delta=deltas, data=pos_data
+    )
+    
+    idx_attr = Attribute(
+        id="indices", component_size=1, storage_type="Uint16Array",
+        needs_pack=False, data=idx_data
+    )
+    
+    return BufFile(
+        vertex_count=len(pos_data) // 3,
+        index_count=len(idx_data),
+        attributes=[idx_attr, pos_attr], 
+        extra_meta=bounds
+    )
+
 if __name__ == "__main__":
     import sys
-    # Example usage: python buf_codec.py sustainability_text.buf
-    for p in sys.argv[1:]:
-        parsed_buf = parse(p)
-        obj_filename = str(Path(p).with_suffix('.obj'))
-        export_to_obj(parsed_buf, obj_filename)
+    
+    if len(sys.argv) < 3:
+        print("Usage:")
+        print("  Decode: python buf_codec.py decode <path_to_buf_file>")
+        print("  Encode: python buf_codec.py encode <path_to_obj_file>")
+        sys.exit(1)
+        
+    command = sys.argv[1].lower()
+    file_path = sys.argv[2]
+    
+    if command == "decode":
+        parsed_buf = parse(file_path)
+        out_name = str(Path(file_path).with_suffix('.obj'))
+        export_to_obj(parsed_buf, out_name)
+    elif command == "encode":
+        buf = import_from_obj(file_path)
+        out_path = Path(file_path).with_suffix('.buf')
+        out_path.write_bytes(serialize(buf))
+        print(f"Successfully encoded to {out_path}!")
+    else:
+        print(f"Unknown command: {command}. Use 'encode' or 'decode'.")
