@@ -1,0 +1,3 @@
+[submodule "msdfgen_temp"]
+	path = msdfgen_temp
+	url = https://github.com/Chlumsky/msdfgen
