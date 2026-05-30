@@ -77,3 +77,38 @@
   overflow: hidden !important;
 }
 
+/* ────────────────────────────────────────────────────────────────────────
+ * GRIP (skip scroll block; keep DOM + engine bindings)
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/* Collapse grip scroll span (~400vh → 1px). #grip stays in the DOM so
+ * HomePage / GripSection / scrollManager keep the same structure as main. */
+#grip {
+  height: 1px !important;
+  min-height: 1px !important;
+  max-height: 1px !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+#grip .section__inner {
+  height: 1px !important;
+  max-height: 1px !important;
+  overflow: hidden !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#grip-header,
+#grip-zoom-box,
+#grip-instruction,
+#grip-zoom-box__inner,
+#grip-zoom-box__image,
+#grip-zoom-box__content,
+#grip-instruction-wheel,
+#grip-instruction-icon {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
