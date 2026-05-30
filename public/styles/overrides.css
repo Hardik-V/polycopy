@@ -82,10 +82,9 @@
  * ──────────────────────────────────────────────────────────────────────── */
 
 /*
- * Do NOT shrink #grip height. scrollManager + tableScene animations 9–10
- * are paced across ~400vh here. Collapsing to 1px makes sustainability/bark
- * start right after the coin flip, then grip runs out of order.
- * Keep layout height from index.css; only hide what the user sees.
+ * Do NOT shrink #grip height — scrollManager is paced across ~400vh here.
+ * GripSection.update in main.js skips tableGripMicro + animations 9–10;
+ * this file only hides grip copy/UI.
  */
 #grip {
   visibility: hidden !important;
