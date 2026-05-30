@@ -78,35 +78,35 @@
 }
 
 /* ────────────────────────────────────────────────────────────────────────
- * GRIP (skip scroll block; keep DOM + engine bindings)
+ * GRIP (invisible; keep full scroll height for engine timing)
  * ──────────────────────────────────────────────────────────────────────── */
 
-/* Collapse grip scroll span (~400vh → 1px). #grip stays in the DOM so
- * HomePage / GripSection / scrollManager keep the same structure as main. */
+/*
+ * Do NOT shrink #grip height. scrollManager + tableScene animations 9–10
+ * are paced across ~400vh here. Collapsing to 1px makes sustainability/bark
+ * start right after the coin flip, then grip runs out of order.
+ * Keep layout height from index.css; only hide what the user sees.
+ */
 #grip {
-  height: 1px !important;
-  min-height: 1px !important;
-  max-height: 1px !important;
-  overflow: hidden !important;
-  pointer-events: none !important;
-}
-
-#grip .section__inner {
-  height: 1px !important;
-  max-height: 1px !important;
-  overflow: hidden !important;
   visibility: hidden !important;
-  opacity: 0 !important;
   pointer-events: none !important;
 }
 
+#grip .section__inner,
 #grip-header,
+#grip-tagline,
+#grip-title,
+#grip-desc,
 #grip-zoom-box,
 #grip-instruction,
 #grip-zoom-box__inner,
 #grip-zoom-box__image,
 #grip-zoom-box__content,
+#grip-zoom-box__content-bg,
+#grip-zoom-box__content-label,
+#grip-zoom-box__content-coeff,
 #grip-instruction-wheel,
+#grip-instruction-wheel-circle,
 #grip-instruction-icon {
   visibility: hidden !important;
   opacity: 0 !important;
