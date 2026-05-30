@@ -77,3 +77,37 @@
   overflow: hidden !important;
 }
 
+/* ────────────────────────────────────────────────────────────────────────
+ * GRIP (invisible; keep full scroll height for engine timing)
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Do NOT shrink #grip height — scrollManager is paced across ~400vh here.
+ * GripSection.update in main.js skips tableGripMicro + animations 9–10;
+ * this file only hides grip copy/UI.
+ */
+#grip {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#grip .section__inner,
+#grip-header,
+#grip-tagline,
+#grip-title,
+#grip-desc,
+#grip-zoom-box,
+#grip-instruction,
+#grip-zoom-box__inner,
+#grip-zoom-box__image,
+#grip-zoom-box__content,
+#grip-zoom-box__content-bg,
+#grip-zoom-box__content-label,
+#grip-zoom-box__content-coeff,
+#grip-instruction-wheel,
+#grip-instruction-wheel-circle,
+#grip-instruction-icon {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
