@@ -78,24 +78,20 @@
 }
 
 /* ────────────────────────────────────────────────────────────────────────
- * GRIP (invisible; keep full scroll height for engine timing)
+ * GRIP — show portfolio copy; hide magnifier UI only
  * ──────────────────────────────────────────────────────────────────────── */
 
 /*
- * Do NOT shrink #grip height — scrollManager is paced across ~400vh here.
- * GripSection.update in main.js skips tableGripMicro + animations 9–10;
- * this file only hides grip copy/UI.
+ * Keep #grip scroll height (~400vh) for engine timing. Visibility is toggled
+ * by GripSection in main.js on #grip (not the children). Do NOT set
+ * visibility:visible !important on #grip-header descendants — that bypasses a
+ * hidden parent and paints over hero/features because .section__inner is
+ * position:fixed. Hide magnifier UI only; let JS show copy during grip scroll.
  */
 #grip {
-  visibility: hidden !important;
   pointer-events: none !important;
 }
 
-#grip .section__inner,
-#grip-header,
-#grip-tagline,
-#grip-title,
-#grip-desc,
 #grip-zoom-box,
 #grip-instruction,
 #grip-zoom-box__inner,

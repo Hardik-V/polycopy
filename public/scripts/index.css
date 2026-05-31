@@ -1416,13 +1416,22 @@ sup {
 #ai-tagline {
     position: absolute;
     color: var(--color-orange);
-    right: .2em;
-    bottom: -1.25em
+    right: 2.75em;
+    bottom: -1.25em;
 }
 
 @media (max-width: 767.98px) {
     #ai-tagline {
-        bottom: 0
+        /* Pushes it below the entire three-line heading block */
+        position: relative; 
+        display: block;
+        
+        /* Resets the right alignment so it reads naturally left-to-right */
+        right: auto;
+        left: 0;
+        
+        /* Adds a clean gap below the main text */
+        margin-top: -15px; 
     }
 }
 
@@ -2186,7 +2195,8 @@ sup {
 }
 
 .features-item-tagline {
-    margin-bottom: calc(var(--site-padding-y) * .6)
+    margin-bottom: calc(var(--site-padding-y) * .6);
+    text-transform: none;
 }
 
 @media (max-width: 767.98px) {
