@@ -20,7 +20,6 @@ src/
     Hero.astro
     Ai.astro
     Features.astro
-    Grip.astro
     OpenWeight.astro
     Product.astro
     Sentiment.astro
