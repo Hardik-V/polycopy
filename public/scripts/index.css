@@ -2195,7 +2195,8 @@ sup {
 }
 
 .features-item-tagline {
-    margin-bottom: calc(var(--site-padding-y) * .6)
+    margin-bottom: calc(var(--site-padding-y) * .6);
+    text-transform: none;
 }
 
 @media (max-width: 767.98px) {
