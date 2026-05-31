@@ -78,24 +78,54 @@
 }
 
 /* ────────────────────────────────────────────────────────────────────────
- * GRIP (invisible; keep full scroll height for engine timing)
+ * GRIP — show portfolio copy; hide magnifier UI only
  * ──────────────────────────────────────────────────────────────────────── */
 
 /*
- * Do NOT shrink #grip height — scrollManager is paced across ~400vh here.
- * GripSection.update in main.js skips tableGripMicro + animations 9–10;
- * this file only hides grip copy/UI.
+ * Keep #grip scroll height (~400vh) for engine timing. SplitText in main.js
+ * animates #grip-tagline / #grip-title / #grip-desc on scroll — do not
+ * display:none those nodes. Hide the drag-to-zoom chrome only.
  */
 #grip {
-  visibility: hidden !important;
   pointer-events: none !important;
 }
 
-#grip .section__inner,
 #grip-header,
 #grip-tagline,
 #grip-title,
-#grip-desc,
+#grip-desc {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#grip-tagline {
+  animation: grip-tagline-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes grip-tagline-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+#grip-title div div {
+  animation: grip-title-shimmer 4s ease-in-out infinite;
+}
+
+@keyframes grip-title-shimmer {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.15);
+  }
+}
+
 #grip-zoom-box,
 #grip-instruction,
 #grip-zoom-box__inner,
