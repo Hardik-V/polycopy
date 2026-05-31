@@ -78,24 +78,18 @@
 }
 
 /* ────────────────────────────────────────────────────────────────────────
- * GRIP (invisible; keep full scroll height for engine timing)
+ * GRIP — onboarding interlude (scroll timing unchanged; hide magnifier only)
  * ──────────────────────────────────────────────────────────────────────── */
 
 /*
- * Do NOT shrink #grip height — scrollManager is paced across ~400vh here.
- * GripSection.update in main.js skips tableGripMicro + animations 9–10;
- * this file only hides grip copy/UI.
+ * Visibility on #grip is toggled by GripSection in main.js during this
+ * scroll range. Do NOT set visibility:visible !important on children.
+ * Scroll-driven step UI: public/styles/grip-onboarding.css
  */
 #grip {
-  visibility: hidden !important;
-  pointer-events: none !important;
+  pointer-events: none;
 }
 
-#grip .section__inner,
-#grip-header,
-#grip-tagline,
-#grip-title,
-#grip-desc,
 #grip-zoom-box,
 #grip-instruction,
 #grip-zoom-box__inner,
