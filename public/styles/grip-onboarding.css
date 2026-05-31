@@ -1,0 +1,338 @@
+/*
+ * Grip onboarding — scroll interlude between flip and sustainability.
+ * Uses CSS scroll-driven animations on #grip (~400vh). Engine SplitText still
+ * animates #grip-tagline / #grip-title / #grip-desc; this panel is separate.
+ */
+
+#grip {
+  view-timeline-name: --grip-scroll;
+  view-timeline-axis: block;
+}
+
+#grip-header {
+  position: relative;
+  height: auto !important;
+  min-height: calc(var(--vh) * 72);
+  padding-bottom: calc(var(--vh) * 3);
+}
+
+/* ── Onboarding panel ─────────────────────────────────────────────────── */
+
+.grip-onboarding {
+  position: relative;
+  width: min(34rem, calc(100vw - var(--site-padding-x) * 2));
+  margin: calc(var(--vh) * 4) auto 0;
+  padding: 0 0 calc(var(--vh) * 2);
+  pointer-events: none;
+}
+
+.grip-onboarding__orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(28rem, 90vw);
+  height: min(28rem, 90vw);
+  margin: -14rem 0 0 -14rem;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in srgb, var(--color-black) 18%, transparent);
+  opacity: 0.45;
+  animation: grip-orbit-spin 24s linear infinite;
+}
+
+.grip-onboarding__orbit::before,
+.grip-onboarding__orbit::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--color-black) 10%, transparent);
+}
+
+.grip-onboarding__orbit::after {
+  inset: 28%;
+  animation: grip-orbit-spin 18s linear infinite reverse;
+}
+
+@keyframes grip-orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.grip-onboarding__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  position: relative;
+  z-index: 1;
+}
+
+.grip-onboarding__step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem 1.1rem;
+  align-items: start;
+  opacity: 0.28;
+  transform: translate3d(0, 0.65rem, 0) scale(0.98);
+  filter: blur(0.04em);
+  transition:
+    opacity 0.35s ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.35s ease;
+}
+
+.grip-onboarding__marker {
+  display: block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-top: 0.55rem;
+  border-radius: 50%;
+  background: var(--color-black);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-black) 35%, transparent);
+}
+
+.grip-onboarding__card {
+  position: relative;
+  padding: 0.85rem 1rem 0.95rem;
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--color-white) 72%, transparent);
+  backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--color-black) 12%, transparent);
+  overflow: hidden;
+}
+
+.grip-onboarding__card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    color-mix(in srgb, var(--color-white) 85%, transparent) 50%,
+    transparent 60%
+  );
+  transform: translateX(-120%);
+  animation: grip-card-shimmer 4.5s ease-in-out infinite;
+}
+
+.grip-onboarding__step[data-step="2"] .grip-onboarding__card::before {
+  animation-delay: 1.2s;
+}
+
+.grip-onboarding__step[data-step="3"] .grip-onboarding__card::before {
+  animation-delay: 2.4s;
+}
+
+@keyframes grip-card-shimmer {
+  0%,
+  70%,
+  100% {
+    transform: translateX(-120%);
+  }
+  85% {
+    transform: translateX(120%);
+  }
+}
+
+.grip-onboarding__index {
+  display: block;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  opacity: 0.55;
+  margin-bottom: 0.35rem;
+}
+
+.grip-onboarding__label {
+  margin: 0;
+  font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.grip-onboarding__detail {
+  margin: 0.35rem 0 0;
+  font-size: clamp(0.78rem, 1.8vw, 0.9rem);
+  line-height: 1.45;
+  opacity: 0.72;
+}
+
+/* Progress rail */
+.grip-onboarding__rail {
+  position: absolute;
+  left: 0.2rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 2px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--color-black) 12%, transparent);
+  overflow: hidden;
+  z-index: 0;
+}
+
+.grip-onboarding__rail-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: top center;
+  transform: scaleY(0);
+  background: linear-gradient(
+    180deg,
+    var(--color-black),
+    color-mix(in srgb, var(--color-black) 40%, transparent)
+  );
+}
+
+/* ── Scroll-driven (progress through #grip) ─────────────────────────── */
+
+@supports (animation-timeline: view()) {
+  .grip-onboarding__rail-fill {
+    animation: grip-rail-fill linear both;
+    animation-timeline: --grip-scroll;
+    animation-range: entry 8% exit 92%;
+  }
+
+  .grip-onboarding__step[data-step="1"] {
+    animation: grip-step-active linear both;
+    animation-timeline: --grip-scroll;
+    animation-range: entry 10% entry 38%;
+  }
+
+  .grip-onboarding__step[data-step="2"] {
+    animation: grip-step-active linear both;
+    animation-timeline: --grip-scroll;
+    animation-range: entry 32% entry 62%;
+  }
+
+  .grip-onboarding__step[data-step="3"] {
+    animation: grip-step-active linear both;
+    animation-timeline: --grip-scroll;
+    animation-range: entry 56% exit 88%;
+  }
+
+  .grip-onboarding__step[data-step="1"] .grip-onboarding__marker {
+    animation: grip-marker-pulse linear both;
+    animation-timeline: --grip-scroll;
+    animation-range: entry 10% entry 38%;
+  }
+
+  .grip-onboarding__step[data-step="2"] .grip-onboarding__marker {
+    animation: grip-marker-pulse linear both;
+    animation-timeline: --grip-scroll;
+    animation-range: entry 32% entry 62%;
+  }
+
+  .grip-onboarding__step[data-step="3"] .grip-onboarding__marker {
+    animation: grip-marker-pulse linear both;
+    animation-timeline: --grip-scroll;
+    animation-range: entry 56% exit 88%;
+  }
+}
+
+@keyframes grip-rail-fill {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes grip-step-active {
+  0% {
+    opacity: 0.28;
+    transform: translate3d(0, 0.65rem, 0) scale(0.98);
+    filter: blur(0.04em);
+  }
+  18%,
+  72% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0.42;
+    transform: translate3d(0, -0.2rem, 0) scale(0.99);
+    filter: blur(0);
+  }
+}
+
+@keyframes grip-marker-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-black) 0%, transparent);
+    transform: scale(1);
+  }
+  40%,
+  60% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-black) 18%, transparent);
+    transform: scale(1.35);
+  }
+}
+
+/* ── Fallback when view timelines unsupported ───────────────────────── */
+
+@supports not (animation-timeline: view()) {
+  #grip[style*="visible"] .grip-onboarding__step {
+    animation: grip-step-fallback 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  #grip[style*="visible"] .grip-onboarding__step[data-step="1"] {
+    animation-delay: 0.1s;
+  }
+
+  #grip[style*="visible"] .grip-onboarding__step[data-step="2"] {
+    animation-delay: 0.35s;
+  }
+
+  #grip[style*="visible"] .grip-onboarding__step[data-step="3"] {
+    animation-delay: 0.6s;
+  }
+
+  #grip[style*="visible"] .grip-onboarding__rail-fill {
+    animation: grip-rail-fill 1.4s ease-out 0.2s both;
+  }
+}
+
+@keyframes grip-step-fallback {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Headline area — distinct from encryption block (narrower, softer) */
+#grip-title {
+  max-width: 14ch;
+  margin-left: auto;
+  margin-right: auto;
+  letter-spacing: -0.02em;
+}
+
+#grip-desc {
+  max-width: 26ch;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.85;
+}
+
+@media (max-width: 767.98px) {
+  .grip-onboarding {
+    width: 100%;
+    margin-top: calc(var(--vh) * 2);
+  }
+
+  .grip-onboarding__orbit {
+    width: 18rem;
+    height: 18rem;
+    margin: -9rem 0 0 -9rem;
+  }
+}

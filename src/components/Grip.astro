@@ -1,40 +1,67 @@
 ---
-// Grip.astro
-// Section id: #grip
-// JS binds to: #grip-header, #grip-tagline, #grip-title, #grip-desc,
-// #grip-zoom-box, #grip-zoom-box__inner, #grip-zoom-box__image,
-// #grip-zoom-box__content, #grip-zoom-box__content-bg,
-// #grip-zoom-box__content-label, #grip-zoom-box__content-coeff,
-// #grip-instruction, #grip-instruction-wheel, #grip-instruction-wheel-circle,
-// #grip-instruction-icon.
-// All ids, classes, and data-* attributes are preserved verbatim.
+// Grip.astro — scroll interlude between flip (#encryption) and sustainability.
+// Engine binds: #grip-header, #grip-tagline, #grip-title, #grip-desc, zoom UI ids.
+// Onboarding visuals live in .grip-onboarding (CSS scroll-driven; not SplitText).
 ---
 
 <div id="grip" class="section">
   <div class="section__inner o-container">
 
     <div id="grip-header">
-      <div id="grip-tagline" class="sub1">Tight grip on the fundamentals</div>
-      <h2 id="grip-title">Anti-slip<br />engineering</h2>
+      <div id="grip-tagline" class="sub1">Scroll interlude</div>
+      <h2 id="grip-title">Desk fades.<br />Bark loads.</h2>
       <div id="grip-desc" class="body2">
-        Strong type systems, defensive APIs, and 93% test coverage<br />so your build doesn't ghost you on a Friday afternoon.
-        <br />Regressions? Politely discouraged.
+        Three beats while the scene hands off — keep scrolling.
+      </div>
+
+      <div class="grip-onboarding" aria-label="Transition steps">
+        <div class="grip-onboarding__orbit" aria-hidden="true"></div>
+
+        <ol class="grip-onboarding__steps">
+          <li class="grip-onboarding__step" data-step="1">
+            <span class="grip-onboarding__marker" aria-hidden="true"></span>
+            <div class="grip-onboarding__card">
+              <span class="grip-onboarding__index">01</span>
+              <p class="grip-onboarding__label">Flip complete</p>
+              <p class="grip-onboarding__detail">Coin lands. Agent loop closes on the mat.</p>
+            </div>
+          </li>
+          <li class="grip-onboarding__step" data-step="2">
+            <span class="grip-onboarding__marker" aria-hidden="true"></span>
+            <div class="grip-onboarding__card">
+              <span class="grip-onboarding__index">02</span>
+              <p class="grip-onboarding__label">Camera pulls back</p>
+              <p class="grip-onboarding__detail">Desk geometry exits. Negative space opens.</p>
+            </div>
+          </li>
+          <li class="grip-onboarding__step" data-step="3">
+            <span class="grip-onboarding__marker" aria-hidden="true"></span>
+            <div class="grip-onboarding__card">
+              <span class="grip-onboarding__index">03</span>
+              <p class="grip-onboarding__label">Origin story</p>
+              <p class="grip-onboarding__detail">Cork bark ahead — sustainability section loading.</p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="grip-onboarding__rail" aria-hidden="true">
+          <span class="grip-onboarding__rail-fill"></span>
+        </div>
       </div>
     </div>
 
-    <!-- Zoom / magnifier interactive box - JS renders texture inside __image -->
+    <!-- Magnifier UI — kept for engine; hidden via CSS -->
     <div id="grip-zoom-box" class="sub2 prevent-select">
       <div id="grip-zoom-box__inner">
         <div id="grip-zoom-box__image"></div>
         <div id="grip-zoom-box__content">
           <div id="grip-zoom-box__content-bg"></div>
-          <div id="grip-zoom-box__content-label">Test coverage (live):</div>
-          <div id="grip-zoom-box__content-coeff">0.93</div>
+          <div id="grip-zoom-box__content-label">Transition:</div>
+          <div id="grip-zoom-box__content-coeff">1.00</div>
         </div>
       </div>
     </div>
 
-    <!-- Scroll-wheel instruction graphic - JS rotates the circle on scroll -->
     <div id="grip-instruction">
       <svg id="grip-instruction-wheel" viewBox="0 0 100 15">
         <path
