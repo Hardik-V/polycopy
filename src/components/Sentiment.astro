@@ -13,30 +13,73 @@
     <div id="encryption-main">
 
       <div id="encryption-header">
-        <div id="encryption-tagline" class="sub1">Ideas in, working software out</div>
-        <h2 id="encryption-title">Prompt to <br />production</h2>
-        <div id="encryption-desc" class="body2">
-          Type a brief. Flip. A working prototype appears, <br />because behind the scenes the agents are doing real work.
+        <div id="encryption-tagline" class="sub1" style="font-size: var(--h4);">Want the full picture?</div>
+        <h2 id="encryption-title">Flip for<br />the CV.</h2>
+        <div id="encryption-desc" class="body1">
+          Heads - you hire me. Tails - you hire me anyway.<br />
+          The coin always lands in your favour.
         </div>
       </div>
 
-      <!-- Input field - four decorative line divs + the real <input> -->
-      <div id="encryption-field">
+      <!--
+        Input field kept verbatim in the DOM so the JS never errors.
+        Collapsed visually: height 0 + overflow hidden + visibility hidden
+        keeps it layout-inert while still accessible to JS property reads.
+      -->
+      <div
+        id="encryption-field"
+        style="height:0;overflow:hidden;visibility:hidden;margin:0;"
+      >
         <div class="encryption-field-line"></div>
         <div class="encryption-field-line"></div>
         <div class="encryption-field-line"></div>
         <div class="encryption-field-line"></div>
-        <input type="text" id="encryption-field-input" value="HARDIK" maxlength="10" />
+        <input
+          type="text"
+          id="encryption-field-input"
+          value=""
+          maxlength="10"
+        />
       </div>
 
-      <!-- Flip button - is-flipper + two is-flipper-target spans toggled by JS -->
-      <button id="encryption-field-flip-btn" class="btn is-active is-flipper">
+      <!--
+        Flip button.
+        Span visibility is driven by CSS translateY on #encryption-field-flip-btn-inner:
+          is-active  →  translateY(-2.5em)  →  span 2 in view  (initial CTA, dark button)
+          no is-active  →  translateY(0)    →  span 1 in view  (post-flip, light button)
+
+        Span 1 = post-flip  = "Check your downloads"
+        Span 2 = initial    = "Flip for the CV"
+      -->
+      <button id="encryption-field-flip-btn" class="btn is-active is-flipper" style="margin: 1.5em auto 0; align-self: center; justify-content: center;">
         <span id="encryption-field-flip-btn-inner">
-          <span class="is-flipper-target">Send to agent</span>
-          <span class="is-flipper-target">Get response</span>
+          <span class="is-flipper-target">Check downloads</span>
+          <span class="is-flipper-target">Click to get my CV</span>
         </span>
       </button>
 
     </div>
   </div>
 </div>
+
+<!-- Resume download anchor — invoked by script, never rendered -->
+<a id="cv-dl" href="/HardikVerma.pdf" download="HardikVerma.pdf" style="display:none"></a>
+
+<!--
+  Tiny standalone script — does NOT touch the minified JS bundle.
+  On any click of the flip button, wait 300ms (coin flip mid-air),
+  then programmatically click the hidden anchor to start the download.
+  300ms feels natural: download lands right as the coin settles.
+-->
+<script>
+  (function () {
+    var btn  = document.getElementById('encryption-field-flip-btn');
+    var link = document.getElementById('cv-dl');
+
+    btn.addEventListener('click', function () {
+      setTimeout(function () {
+        link.click();
+      }, 300);
+    });
+  })();
+</script>
