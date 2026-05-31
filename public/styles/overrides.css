@@ -111,3 +111,43 @@
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+/* ────────────────────────────────────────────────────────────────────────
+ * SUSTAINABILITY — layout anchor vs WebGL headline scale
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/*
+ * main.js scales sustainability_text.buf to #sustainability-title-main
+ * getBoundingClientRect(). The coin-sdf branch lays out correctly because
+ * title-main is the shorter word "curiosity" (~9 chars). On main, the full
+ * word "sustainability" at 15vw produces a much wider rect → oversized 3D
+ * headline and #sustainability-desc (fixed at 68vh) draws through it.
+ * This is unrelated to .buf file bytes if both branches use the same mesh.
+ */
+#sustainability-title-main {
+  font-size: 9.4vw !important;
+  text-align: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+#sustainability-title-pre {
+  left: 0 !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+
+#sustainability-desc {
+  top: calc(var(--vh) * 74) !important;
+  transform: translate3d(0, 0, 0) !important;
+}
+
+@media (max-width: 767.98px) {
+  #sustainability-title-main {
+    font-size: 11vw !important;
+  }
+
+  #sustainability-desc {
+    top: calc(var(--vh) * 82) !important;
+  }
+}
