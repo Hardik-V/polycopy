@@ -76,34 +76,3 @@
   height: 0 !important;
   overflow: hidden !important;
 }
-
-/* ────────────────────────────────────────────────────────────────────────
- * GRIP — show portfolio copy; hide magnifier UI only
- * ──────────────────────────────────────────────────────────────────────── */
-
-/*
- * Keep #grip scroll height (~400vh) for engine timing. Visibility is toggled
- * by GripSection in main.js on #grip (not the children). Do NOT set
- * visibility:visible !important on #grip-header descendants — that bypasses a
- * hidden parent and paints over hero/features because .section__inner is
- * position:fixed. Hide magnifier UI only; let JS show copy during grip scroll.
- */
-#grip {
-  pointer-events: none !important;
-}
-
-#grip-zoom-box,
-#grip-instruction,
-#grip-zoom-box__inner,
-#grip-zoom-box__image,
-#grip-zoom-box__content,
-#grip-zoom-box__content-bg,
-#grip-zoom-box__content-label,
-#grip-zoom-box__content-coeff,
-#grip-instruction-wheel,
-#grip-instruction-wheel-circle,
-#grip-instruction-icon {
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
