@@ -14,27 +14,78 @@
   <div class="section__inner o-container">
 
     <div id="grip-header">
-      <div id="grip-tagline" class="sub1">No slip-ups on the fundamentals</div>
-      <h2 id="grip-title">Reliability<br />you can ship</h2>
+      <div id="grip-tagline" class="sub1">What I actually reach for</div>
+      <h2 id="grip-title">The Stack</h2>
       <div id="grip-desc" class="body2">
-        Typed APIs, defensive error handling, and CI that still passes<br />when someone merges at 4:58&nbsp;pm on a Friday.
-        <br />93% test coverage on the storefront — regressions get the cold shoulder.
+        Drag to explore the tools I use daily —<br />
+        from pixel to pipeline.
       </div>
     </div>
 
-    <!-- Zoom / magnifier interactive box - JS renders texture inside __image -->
+    <!-- Repurposed as horizontal tech-stack scroll strip -->
     <div id="grip-zoom-box" class="sub2 prevent-select">
+      <!-- JS translates this on drag -->
       <div id="grip-zoom-box__inner">
-        <div id="grip-zoom-box__image"></div>
+
+        <!-- __image keeps its id/size so JS rect calculations don't break -->
+        <div id="grip-zoom-box__image">
+          <div id="grip-stack-track">
+
+            <!-- ── FRONTEND ───────────────────────── -->
+            <div class="grip-stack-group" data-label="Frontend">
+              <span class="grip-stack-item">React</span>
+              <span class="grip-stack-item grip-stack-item--dim">TypeScript</span>
+              <span class="grip-stack-item">Next.js</span>
+              <span class="grip-stack-item grip-stack-item--dim">Astro</span>
+              <span class="grip-stack-item">Tailwind</span>
+              <span class="grip-stack-item grip-stack-item--dim">Framer Motion</span>
+              <span class="grip-stack-divider">◆</span>
+            </div>
+
+            <!-- ── 3D / VISUAL ─────────────────────── -->
+            <div class="grip-stack-group" data-label="3D & Visual">
+              <span class="grip-stack-item grip-stack-item--accent">Three.js</span>
+              <span class="grip-stack-item grip-stack-item--dim">WebGL</span>
+              <span class="grip-stack-item grip-stack-item--accent">GLSL</span>
+              <span class="grip-stack-item grip-stack-item--dim">R3F</span>
+              <span class="grip-stack-item grip-stack-item--accent">Canvas 2D</span>
+              <span class="grip-stack-divider">◆</span>
+            </div>
+
+            <!-- ── BACKEND ─────────────────────────── -->
+            <div class="grip-stack-group" data-label="Backend">
+              <span class="grip-stack-item">Node.js</span>
+              <span class="grip-stack-item grip-stack-item--dim">PostgreSQL</span>
+              <span class="grip-stack-item">Prisma</span>
+              <span class="grip-stack-item grip-stack-item--dim">tRPC</span>
+              <span class="grip-stack-item">REST</span>
+              <span class="grip-stack-divider">◆</span>
+            </div>
+
+            <!-- ── TOOLING ─────────────────────────── -->
+            <div class="grip-stack-group" data-label="Tooling">
+              <span class="grip-stack-item grip-stack-item--dim">Git</span>
+              <span class="grip-stack-item">Vite</span>
+              <span class="grip-stack-item grip-stack-item--dim">Vitest</span>
+              <span class="grip-stack-item">CI/CD</span>
+              <span class="grip-stack-item grip-stack-item--dim">Docker</span>
+            </div>
+
+          </div><!-- /grip-stack-track -->
+        </div><!-- /#grip-zoom-box__image -->
+
+        <!-- Label strip above box — JS animates opacity on this wrapper -->
         <div id="grip-zoom-box__content">
           <div id="grip-zoom-box__content-bg"></div>
-          <div id="grip-zoom-box__content-label">Test coverage:</div>
-          <div id="grip-zoom-box__content-coeff">0.93</div>
+          <!-- JS reads these two IDs for opacity/text animations -->
+          <div id="grip-zoom-box__content-label">Category</div>
+          <div id="grip-zoom-box__content-coeff" id="grip-stack-pos">01 / 04</div>
         </div>
-      </div>
-    </div>
 
-    <!-- Scroll-wheel instruction graphic - JS rotates the circle on scroll -->
+      </div><!-- /#grip-zoom-box__inner -->
+    </div><!-- /#grip-zoom-box -->
+
+    <!-- Scroll-wheel instruction graphic — JS rotates the circle on scroll -->
     <div id="grip-instruction">
       <svg id="grip-instruction-wheel" viewBox="0 0 100 15">
         <path
@@ -61,3 +112,133 @@
 
   </div>
 </div>
+
+<style>
+  /* ── Stack track ─────────────────────────────────────────────── */
+  #grip-zoom-box__image {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    /* keep aspect-ratio:2 from index.css — JS reads its rect */
+  }
+
+  #grip-stack-track {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 1.5em;
+    white-space: nowrap;
+    /* Wide enough that drag feels like real travel */
+    width: max-content;
+    /* Animate with drag via JS translate on __inner */
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .grip-stack-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+  }
+
+  .grip-stack-item {
+    font-family: var(--font-sans, 'DM Mono', monospace);
+    font-size: clamp(0.65rem, 1.2vw, 0.9rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-white, #ffedd7);
+    opacity: 0.9;
+    padding: 0.3em 0.75em;
+    border: 1px solid rgba(255, 133, 57, 0.25);
+    border-radius: 2px;
+    transition: border-color 0.2s, opacity 0.2s;
+  }
+
+  .grip-stack-item--dim {
+    opacity: 0.45;
+    border-color: rgba(255, 237, 215, 0.1);
+  }
+
+  .grip-stack-item--accent {
+    color: #FF8539;
+    border-color: rgba(255, 133, 57, 0.5);
+    opacity: 1;
+  }
+
+  .grip-stack-divider {
+    display: inline-block;
+    color: #FF8539;
+    opacity: 0.4;
+    font-size: 0.5em;
+    margin: 0 1.2em;
+  }
+
+  /* Override the white label strip to match dark theme */
+  #grip-zoom-box__content {
+    color: var(--color-white, #ffedd7) !important;
+    border-top: 1px solid rgba(255, 133, 57, 0.3);
+    background: transparent;
+    font-family: var(--font-sans, 'DM Mono', monospace);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  #grip-zoom-box__content-bg {
+    background: rgba(10, 6, 4, 0.7) !important;
+    backdrop-filter: blur(4px);
+  }
+
+  #grip-zoom-box__content-label {
+    opacity: 0.5;
+  }
+
+  /* Dashed border around the whole box to match site aesthetic */
+  #grip-zoom-box__inner {
+    outline: 1px dashed rgba(255, 237, 215, 0.2);
+    outline-offset: 4px;
+  }
+
+  #grip-zoom-box__inner:active {
+    cursor: grabbing;
+  }
+</style>
+
+<script>
+  // Update category label and position counter as user drags
+  (function () {
+    const track = document.getElementById('grip-stack-track');
+    const inner = document.getElementById('grip-zoom-box__inner');
+    const label = document.getElementById('grip-zoom-box__content-label');
+    const coeff = document.getElementById('grip-zoom-box__content-coeff');
+    if (!track || !inner || !label || !coeff) return;
+
+    const groups = track.querySelectorAll('.grip-stack-group');
+    const groupLabels = Array.from(groups).map(g => g.dataset.label);
+    const total = groupLabels.length;
+
+    // Poll the inner element's transform to update the label
+    // (JS engine sets transform directly, we read it back)
+    let lastX = 0;
+    function update() {
+      const style = inner.style.transform || '';
+      const match = style.match(/translate3d\(([-\d.]+)px/);
+      const x = match ? parseFloat(match[1]) : 0;
+
+      if (x !== lastX) {
+        lastX = x;
+        // Map drag position to track group index
+        const trackW = track.scrollWidth;
+        const boxW = inner.offsetWidth;
+        // x goes negative when dragging right; clamp to track range
+        const maxDrag = Math.min(trackW - boxW, 300);
+        const ratio = Math.max(0, Math.min(1, -x / Math.max(1, maxDrag)));
+        const idx = Math.min(total - 1, Math.floor(ratio * total));
+        label.textContent = groupLabels[idx] || groupLabels[0];
+        coeff.textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+      }
+      requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  })();
+</script>
