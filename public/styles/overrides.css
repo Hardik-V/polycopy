@@ -64,6 +64,23 @@
 }
 
 /* ────────────────────────────────────────────────────────────────────────
+ * GRIP / THE STACK
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Hand-animation + wheel instruction graphic.
+ * JS only reads getBoundingClientRect() on #grip-instruction-wheel once in
+ * resize() — the result (_wheelWidth) is used as a multiplier for cosine
+ * oscillations. With width:0 the multiplier is 0 and all transforms become
+ * translate3d(0,0,0) which is harmless. The _domInstructionWheelCircle
+ * transform divides by _wheelWidth; NaN in a CSS string is silently ignored
+ * by browsers. Safe to fully remove from layout.
+ */
+#grip-instruction {
+  display: none !important;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
  * FOOTER
  * ──────────────────────────────────────────────────────────────────────── */
 

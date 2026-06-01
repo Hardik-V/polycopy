@@ -1,13 +1,5 @@
 ---
 // Grip.astro
-// Section id: #grip
-// JS binds to: #grip-header, #grip-tagline, #grip-title, #grip-desc,
-// #grip-zoom-box, #grip-zoom-box__inner, #grip-zoom-box__image,
-// #grip-zoom-box__content, #grip-zoom-box__content-bg,
-// #grip-zoom-box__content-label, #grip-zoom-box__content-coeff,
-// #grip-instruction, #grip-instruction-wheel, #grip-instruction-wheel-circle,
-// #grip-instruction-icon.
-// All ids, classes, and data-* attributes are preserved verbatim.
 ---
 
 <div id="grip" class="section">
@@ -17,91 +9,131 @@
       <div id="grip-tagline" class="sub1">What I actually reach for</div>
       <h2 id="grip-title">The Stack</h2>
       <div id="grip-desc" class="body2">
-        Drag to explore the tools I use daily —<br />
-        from pixel to pipeline.
+        Tools I ship with the best.<br />
+        Find more in my CV
       </div>
     </div>
 
-    <!-- Repurposed as horizontal tech-stack scroll strip -->
-    <div id="grip-zoom-box" class="sub2 prevent-select">
-      <!-- JS translates this on drag -->
+    <!-- JS hooks: zeroed out, engine still binds fine -->
+    <div id="grip-zoom-box" class="sub2 prevent-select" style="position:absolute;width:0;height:0;overflow:hidden;pointer-events:none;opacity:0;">
       <div id="grip-zoom-box__inner">
-
-        <!-- __image keeps its id/size so JS rect calculations don't break -->
-        <div id="grip-zoom-box__image">
-          <div id="grip-stack-track">
-
-            <!-- ── FRONTEND ───────────────────────── -->
-            <div class="grip-stack-group" data-label="Frontend">
-              <span class="grip-stack-item">React</span>
-              <span class="grip-stack-item grip-stack-item--dim">TypeScript</span>
-              <span class="grip-stack-item">Next.js</span>
-              <span class="grip-stack-item grip-stack-item--dim">Astro</span>
-              <span class="grip-stack-item">Tailwind</span>
-              <span class="grip-stack-item grip-stack-item--dim">Framer Motion</span>
-              <span class="grip-stack-divider">◆</span>
-            </div>
-
-            <!-- ── 3D / VISUAL ─────────────────────── -->
-            <div class="grip-stack-group" data-label="3D & Visual">
-              <span class="grip-stack-item grip-stack-item--accent">Three.js</span>
-              <span class="grip-stack-item grip-stack-item--dim">WebGL</span>
-              <span class="grip-stack-item grip-stack-item--accent">GLSL</span>
-              <span class="grip-stack-item grip-stack-item--dim">R3F</span>
-              <span class="grip-stack-item grip-stack-item--accent">Canvas 2D</span>
-              <span class="grip-stack-divider">◆</span>
-            </div>
-
-            <!-- ── BACKEND ─────────────────────────── -->
-            <div class="grip-stack-group" data-label="Backend">
-              <span class="grip-stack-item">Node.js</span>
-              <span class="grip-stack-item grip-stack-item--dim">PostgreSQL</span>
-              <span class="grip-stack-item">Prisma</span>
-              <span class="grip-stack-item grip-stack-item--dim">tRPC</span>
-              <span class="grip-stack-item">REST</span>
-              <span class="grip-stack-divider">◆</span>
-            </div>
-
-            <!-- ── TOOLING ─────────────────────────── -->
-            <div class="grip-stack-group" data-label="Tooling">
-              <span class="grip-stack-item grip-stack-item--dim">Git</span>
-              <span class="grip-stack-item">Vite</span>
-              <span class="grip-stack-item grip-stack-item--dim">Vitest</span>
-              <span class="grip-stack-item">CI/CD</span>
-              <span class="grip-stack-item grip-stack-item--dim">Docker</span>
-            </div>
-
-          </div><!-- /grip-stack-track -->
-        </div><!-- /#grip-zoom-box__image -->
-
-        <!-- Label strip above box — JS animates opacity on this wrapper -->
+        <div id="grip-zoom-box__image"></div>
         <div id="grip-zoom-box__content">
           <div id="grip-zoom-box__content-bg"></div>
-          <!-- JS reads these two IDs for opacity/text animations -->
-          <div id="grip-zoom-box__content-label">Category</div>
-          <div id="grip-zoom-box__content-coeff" id="grip-stack-pos">01 / 04</div>
+          <div id="grip-zoom-box__content-label">Coverage</div>
+          <div id="grip-zoom-box__content-coeff">0.93</div>
         </div>
+      </div>
+    </div>
 
-      </div><!-- /#grip-zoom-box__inner -->
-    </div><!-- /#grip-zoom-box -->
+    <!-- 2×2 glass card grid -->
+    <div id="grip-skills">
 
-    <!-- Scroll-wheel instruction graphic — JS rotates the circle on scroll -->
+      <div class="grip-card">
+        <div class="grip-skills__category">Frontend</div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">React / Next.js</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill" style="--pct:90%"></div></div>
+          <span class="grip-bar-pct">90</span>
+        </div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">TypeScript</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill" style="--pct:86%"></div></div>
+          <span class="grip-bar-pct">86</span>
+        </div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">HTML / CSS</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill" style="--pct:88%"></div></div>
+          <span class="grip-bar-pct">88</span>
+        </div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">Three.js / WebGL</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill grip-bar-fill--accent" style="--pct:72%"></div></div>
+          <span class="grip-bar-pct">72</span>
+        </div>
+      </div>
+
+      <div class="grip-card">
+        <div class="grip-skills__category">Backend &amp; Cloud</div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">Node.js / Express</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill" style="--pct:90%"></div></div>
+          <span class="grip-bar-pct">90</span>
+        </div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">PostgreSQL</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill" style="--pct:84%"></div></div>
+          <span class="grip-bar-pct">84</span>
+        </div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">AWS (EC2 · S3 · Lambda)</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill grip-bar-fill--accent" style="--pct:78%"></div></div>
+          <span class="grip-bar-pct">78</span>
+        </div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">Docker / CI-CD</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill" style="--pct:80%"></div></div>
+          <span class="grip-bar-pct">80</span>
+        </div>
+      </div>
+
+      <div class="grip-card">
+        <div class="grip-skills__category">Languages</div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">JavaScript</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill" style="--pct:91%"></div></div>
+          <span class="grip-bar-pct">91</span>
+        </div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">Python</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill" style="--pct:90%"></div></div>
+          <span class="grip-bar-pct">90</span>
+        </div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">Java</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill" style="--pct:82%"></div></div>
+          <span class="grip-bar-pct">82</span>
+        </div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">C / SQL / Shell</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill" style="--pct:74%"></div></div>
+          <span class="grip-bar-pct">74</span>
+        </div>
+      </div>
+
+      <div class="grip-card">
+        <div class="grip-skills__category">AI &amp; Testing</div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">LLM APIs / MCP</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill grip-bar-fill--accent" style="--pct:88%"></div></div>
+          <span class="grip-bar-pct">88</span>
+        </div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">Agentic Workflows</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill grip-bar-fill--accent" style="--pct:85%"></div></div>
+          <span class="grip-bar-pct">85</span>
+        </div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">Jest / JUnit</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill" style="--pct:93%"></div></div>
+          <span class="grip-bar-pct">93</span>
+        </div>
+        <div class="grip-bar-row">
+          <span class="grip-bar-label">Prompt Engineering</span>
+          <div class="grip-bar-track"><div class="grip-bar-fill" style="--pct:87%"></div></div>
+          <span class="grip-bar-pct">87</span>
+        </div>
+      </div>
+
+    </div><!-- /#grip-skills -->
+
+    <!-- JS animates this — hidden via overrides.css -->
     <div id="grip-instruction">
       <svg id="grip-instruction-wheel" viewBox="0 0 100 15">
-        <path
-          fill="none"
-          stroke="currentColor"
-          stroke-width="0.25"
-          d="M50,12.125c32,0,50,-8.5,50,-10"
-          stroke-dasharray="1 1"
-        ></path>
-        <path
-          fill="none"
-          stroke="currentColor"
-          stroke-width="0.25"
-          d="M50,12.125c-32,0,-50,-8.5,-50,-10"
-          stroke-dasharray="1 1"
-        ></path>
+        <path fill="none" stroke="currentColor" stroke-width="0.25"
+          d="M50,12.125c32,0,50,-8.5,50,-10" stroke-dasharray="1 1"></path>
+        <path fill="none" stroke="currentColor" stroke-width="0.25"
+          d="M50,12.125c-32,0,-50,-8.5,-50,-10" stroke-dasharray="1 1"></path>
         <circle cx="50" cy="12.125" r="0.8" fill="currentColor"></circle>
         <circle id="grip-instruction-wheel-circle" cx="50" cy="12.125" r="1.8" fill="currentColor"></circle>
       </svg>
@@ -114,131 +146,216 @@
 </div>
 
 <style>
-  /* ── Stack track ─────────────────────────────────────────────── */
-  #grip-zoom-box__image {
-    overflow: hidden;
+  /* ── Grid container ───────────────────────────────────────────────
+     Fixed inner, 100vh tall. Header occupies top ~8–68vh.
+     Grid sits from 70vh down, centered.
+  ────────────────────────────────────────────────────────────────── */
+  #grip-skills {
+    position: absolute;
+    top: calc(var(--vh) * 40);
+    left: 0;
+    right: 0;
+    padding: 0 var(--site-padding-x);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: calc(var(--screen-unit) * 14);
+    box-sizing: border-box;
+  }
+
+  /* ── Glass card — CSS equivalent of the engine's BlurBox ─────────
+     Engine uses color:#FFEDD6 @ colorAlpha 0.15 + blurRadius 0.08.
+     CSS translation: rgba(255,237,214,0.13) bg + backdrop-filter blur
+     + 1px outline border matching the site's o-dashline style.
+  ────────────────────────────────────────────────────────────────── */
+  .grip-card {
+    background: rgba(255, 237, 214, 0.07);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border: 1px solid rgba(255, 237, 214, 0.13);
+    border-radius: calc(var(--screen-unit) * 6);
+    padding: calc(var(--screen-unit) * 22) calc(var(--screen-unit) * 26);
     display: flex;
-    align-items: center;
-    /* keep aspect-ratio:2 from index.css — JS reads its rect */
+    flex-direction: column;
+    gap: calc(var(--screen-unit) * 16);
   }
 
-  #grip-stack-track {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    padding: 0 1.5em;
-    white-space: nowrap;
-    /* Wide enough that drag feels like real travel */
-    width: max-content;
-    /* Animate with drag via JS translate on __inner */
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .grip-stack-group {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6em;
-  }
-
-  .grip-stack-item {
-    font-family: var(--font-sans, 'DM Mono', monospace);
-    font-size: clamp(0.65rem, 1.2vw, 0.9rem);
-    letter-spacing: 0.12em;
+  /* ── Category label ──────────────────────────────────────────── */
+  .grip-skills__category {
+    font-family: var(--font-mono, 'DM Mono', monospace);
+    font-size: calc(var(--screen-unit) * 14);
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--color-white, #ffedd7);
-    opacity: 0.9;
-    padding: 0.3em 0.75em;
-    border: 1px solid rgba(255, 133, 57, 0.25);
-    border-radius: 2px;
-    transition: border-color 0.2s, opacity 0.2s;
+    color: var(--color-orange, #FF8539);
+    margin-bottom: calc(var(--screen-unit) * 2);
   }
 
-  .grip-stack-item--dim {
-    opacity: 0.45;
-    border-color: rgba(255, 237, 215, 0.1);
+  /* ── Bar rows ────────────────────────────────────────────────── */
+  .grip-bar-row {
+    display: grid;
+    grid-template-columns: 1.1fr 1.8fr auto;
+    align-items: center;
+    gap: calc(var(--screen-unit) * 14);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
   }
 
-  .grip-stack-item--accent {
-    color: #FF8539;
-    border-color: rgba(255, 133, 57, 0.5);
+  #grip.bars-ready .grip-bar-row {
     opacity: 1;
+    transform: translateY(0);
   }
 
-  .grip-stack-divider {
-    display: inline-block;
-    color: #FF8539;
-    opacity: 0.4;
-    font-size: 0.5em;
-    margin: 0 1.2em;
+  .grip-bar-label {
+    font-family: var(--font-mono, 'DM Mono', monospace);
+    font-size: calc(var(--screen-unit) * 15);
+    letter-spacing: 0.04em;
+    color: rgba(255, 237, 215, 0.7);
+    white-space: nowrap;
   }
 
-  /* Override the white label strip to match dark theme */
-  #grip-zoom-box__content {
-    color: var(--color-white, #ffedd7) !important;
-    border-top: 1px solid rgba(255, 133, 57, 0.3);
-    background: transparent;
-    font-family: var(--font-sans, 'DM Mono', monospace);
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+  .grip-bar-track {
+    height: 1px;
+    background: rgba(255, 237, 215, 0.1);
+    border-radius: 1px;
+    overflow: hidden;
   }
 
-  #grip-zoom-box__content-bg {
-    background: rgba(10, 6, 4, 0.7) !important;
-    backdrop-filter: blur(4px);
+  .grip-bar-fill {
+    height: 100%;
+    width: 0;
+    background: rgba(255, 237, 215, 0.4);
+    border-radius: 1px;
+    transition: width 0.75s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  #grip-zoom-box__content-label {
-    opacity: 0.5;
+  #grip.bars-ready .grip-bar-fill {
+    width: var(--pct, 0%);
   }
 
-  /* Dashed border around the whole box to match site aesthetic */
-  #grip-zoom-box__inner {
-    outline: 1px dashed rgba(255, 237, 215, 0.2);
-    outline-offset: 4px;
+  .grip-bar-fill--accent {
+    background: var(--color-orange, #FF8539);
+    opacity: 0.9;
   }
 
-  #grip-zoom-box__inner:active {
-    cursor: grabbing;
+  .grip-bar-pct {
+    font-family: var(--font-mono, 'DM Mono', monospace);
+    font-size: calc(var(--screen-unit) * 13);
+    color: rgba(255, 237, 215, 0.28);
+    min-width: 2ch;
+    text-align: right;
+  }
+
+  /* ── Mobile ───────────────────────────────────────────────────────
+     Single scrollable column. No bars or numbers — just the category
+     heading and a clean pill-tag list of skill names.
+  ────────────────────────────────────────────────────────────────── */
+
+  /* Let the section scroll on mobile rather than clipping to viewport */
+  @media (max-width: 767.98px) {
+    #grip .section__inner {
+      position: relative;
+      height: auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  @media (max-width: 767.98px) {
+    #grip-skills {
+      position: relative;
+      top: auto;
+      margin-top: calc(var(--screen-unit) * 254);
+      grid-template-columns: 1fr;
+      gap: calc(var(--screen-unit) * 10);
+      padding: 0 var(--site-padding-x);
+    }
+
+    /* Compact card on mobile */
+    .grip-card {
+      padding: calc(var(--screen-unit) * 18) calc(var(--screen-unit) * 20);
+      gap: calc(var(--screen-unit) * 14);
+    }
+
+    /* Hide bars + numbers entirely */
+    .grip-bar-track,
+    .grip-bar-pct {
+      display: none;
+    }
+
+    /* Row becomes a simple inline label */
+    .grip-bar-row {
+      display: block;
+      opacity: 0;
+      transform: none;
+    }
+
+    #grip.bars-ready .grip-bar-row {
+      opacity: 1;
+    }
+
+    .grip-bar-label {
+      font-size: calc(var(--screen-unit) * 12);
+      color: rgba(255, 237, 215, 0.75);
+      white-space: normal;
+    }
+
+    /* Skill names render as a comma-separated flow */
+    .grip-card .grip-bar-row + .grip-bar-row .grip-bar-label::before {
+      content: '· ';
+      color: rgba(255, 237, 215, 0.3);
+    }
   }
 </style>
 
 <script>
-  // Update category label and position counter as user drags
+  /**
+   * MutationObserver watches #grip's inline style for visibility:visible.
+   * When the 3D engine shows the section, we add .bars-ready to trigger
+   * the CSS stagger transitions on bars and fills.
+   * Stagger delay is set inline per-row before the observer fires.
+   */
   (function () {
-    const track = document.getElementById('grip-stack-track');
-    const inner = document.getElementById('grip-zoom-box__inner');
-    const label = document.getElementById('grip-zoom-box__content-label');
-    const coeff = document.getElementById('grip-zoom-box__content-coeff');
-    if (!track || !inner || !label || !coeff) return;
-
-    const groups = track.querySelectorAll('.grip-stack-group');
-    const groupLabels = Array.from(groups).map(g => g.dataset.label);
-    const total = groupLabels.length;
-
-    // Poll the inner element's transform to update the label
-    // (JS engine sets transform directly, we read it back)
-    let lastX = 0;
-    function update() {
-      const style = inner.style.transform || '';
-      const match = style.match(/translate3d\(([-\d.]+)px/);
-      const x = match ? parseFloat(match[1]) : 0;
-
-      if (x !== lastX) {
-        lastX = x;
-        // Map drag position to track group index
-        const trackW = track.scrollWidth;
-        const boxW = inner.offsetWidth;
-        // x goes negative when dragging right; clamp to track range
-        const maxDrag = Math.min(trackW - boxW, 300);
-        const ratio = Math.max(0, Math.min(1, -x / Math.max(1, maxDrag)));
-        const idx = Math.min(total - 1, Math.floor(ratio * total));
-        label.textContent = groupLabels[idx] || groupLabels[0];
-        coeff.textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
-      }
-      requestAnimationFrame(update);
+    function applyStagger() {
+      const cards = document.querySelectorAll('#grip-skills .grip-card');
+      cards.forEach((card, ci) => {
+        card.querySelectorAll('.grip-bar-row').forEach((row, ri) => {
+          const delay = ci * 80 + ri * 60;
+          row.style.transitionDelay = `${delay}ms`;
+          const fill = row.querySelector('.grip-bar-fill');
+          if (fill) fill.style.transitionDelay = `${delay + 90}ms`;
+        });
+      });
     }
-    requestAnimationFrame(update);
+
+    function init() {
+      const grip = document.getElementById('grip');
+      if (!grip) return;
+      applyStagger();
+
+      let fired = false;
+
+      const trigger = () => {
+        if (fired) return;
+        fired = true;
+        grip.classList.add('bars-ready');
+        observer.disconnect();
+      };
+
+      const observer = new MutationObserver(() => {
+        if (grip.style.visibility === 'visible') trigger();
+      });
+
+      observer.observe(grip, { attributes: true, attributeFilter: ['style'] });
+
+      // Fallback if engine hasn't set visibility by 1.5s
+      setTimeout(trigger, 1500);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
   })();
 </script>
