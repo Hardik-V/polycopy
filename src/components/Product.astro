@@ -23,11 +23,11 @@
         </div>
         <div id="product-hero-options">
           <button data-id="0" id="product-hero-option-oryzo"
-            class="product-hero-option-item btn is-large is-dark is-active is-flipper">Sentiment Visualiser</button>
+            class="product-hero-option-item btn is-large is-dark is-active is-flipper">BRAVO</button>
           <button data-id="1" id="product-hero-option-oryzo-pro"
-            class="product-hero-option-item btn is-large is-dark is-flipper">E-Commerce Platform</button>
+            class="product-hero-option-item btn is-large is-dark is-flipper">CoolCoolCool</button>
           <button data-id="2" id="product-hero-option-oryzo-pro-max"
-            class="product-hero-option-item btn is-large is-dark is-flipper">MCP Agent Server</button>
+            class="product-hero-option-item btn is-large is-dark is-flipper">OpenLoans</button>
         </div>
       </div>
     </div>
@@ -35,23 +35,26 @@
     <!-- Product details panel - JS swaps visible span/div on button click -->
     <div id="product-details">
       <div id="product-details-inner">
+
         <div id="product-details-main">
 
           <!-- Title spans - one per variant, JS shows the active one -->
           <h4 id="product-details-title-wrapper">
-            <span>Sentiment Visualiser</span>
-            <span>E-Commerce Platform</span>
-            <span>MCP Agent Server</span>
+            <span>Price x News</span>
+            <span>AI B2B AaaS</span>
+            <span>OpenLoans</span>
           </h4>
 
           <!-- Description divs - one per variant -->
           <div id="product-details-desc-wrapper" class="body2">
             <div>Financial sentiment &amp; market event visualiser. Three-microservice architecture on AWS,
-              star-map UI for sentiment vs price. Won the Optiver industry prize at UNSW 3011 Capstone, 2026.</div>
-            <div>Full-stack e-commerce storefront with React, Node.js and PostgreSQL. 25+ REST endpoints,
-              93% test coverage, deployed on Vercel. Earned a letter of recommendation from the UNSW Director of Studies.</div>
-            <div>An MCP server that exposes every API endpoint as an AI-callable tool, so a Claude/OpenAI agent
-              can run the storefront end-to-end via natural language. Cursor and LLM workflows out of the box.</div>
+              star-map UI for sentiment vs price where each trading day is a star in space. Won the Optiver industry prize at UNSW 3011 Capstone, 2026.</div>
+            <div>Full-stack production storefront natively integrated with a custom Model 
+            Context Protocol (MCP) server. Exposes 25+ secure REST endpoints as machine-readable tools, 
+            allowing LLM agents to execute end-to-end user workflows using natural language. Earned a letter of recommendation from the UNSW SENG Director of Studies.</div>
+            <div>Financial optimization simulator and "Points Hacking" assistant designed and shipped from scratch 
+            in under 48 hours for a rapid engineering sprint. Features a low-level GPGPU physics layer, shifting 
+            thousands of compounding vector math calculations directly onto GPU shaders.</div>
           </div>
         </div>
 
@@ -68,24 +71,53 @@
         <div id="product-details-extra" class="body2">
           <div class="product-details-extra-item">
             <svg viewBox="0 0 20 20"><use href="#product-double-circles"></use></svg>
-            <div>Python · AWS Lambda · API Gateway · Docker</div>
-            <div>React · Node.js · PostgreSQL · Vercel</div>
-            <div>TypeScript · Node.js · Model Context Protocol</div>
+            <div>Python · AWS Lambda · API GW · S3</div>
+            <div>React · Node.js · PostgreSQL · MCP</div>
+            <div>Next.js 14 · WebGL/GLSL · Zustand</div>
           </div>
           <div class="product-details-extra-item">
             <svg viewBox="0 0 20 20"><use href="#product-double-circles"></use></svg>
-            <div>3-microservice cloud architecture</div>
-            <div>25+ REST endpoints, 93% test coverage</div>
-            <div>Every endpoint exposed as an AI-callable tool</div>
+            <div>Microservice cloud architecture</div>
+            <div>25+ REST endpoints, 93% coverage</div>
+            <div>GPGPU particle physics rendering</div>
           </div>
           <div class="product-details-extra-item">
             <svg viewBox="0 0 20 20"><use href="#product-double-circles"></use></svg>
             <div>Won Optiver industry prize</div>
             <div>Director of Studies recommendation</div>
-            <div>Live LLM workflows in Cursor &amp; Claude</div>
+            <div>48-Hour high-velocity rapid prototype</div>
           </div>
         </div>
 
+      </div>
+
+      <!-- Icons sit directly in #product-details (position:relative, no transform).
+           JS positions them each rAF by diffing span rect vs section rect. -->
+      <div id="project-links-overlay">
+        <div class="project-links" data-project="0">
+          <a href="https://github.com/Hardik-V/BRAVO_SENG3011" target="_blank" rel="noopener" class="project-link-btn" aria-label="GitHub repo">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a href="http://bravo-constellation-app.s3-website-ap-southeast-2.amazonaws.com/" target="_blank" rel="noopener" class="project-link-btn" aria-label="Live demo">
+            <svg viewBox="0 0 10 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l8 5-8 5V1z"/></svg>
+          </a>
+        </div>
+        <div class="project-links" data-project="1">
+          <a href="https://github.com/hamhead105/H14B_CoolCoolCool" target="_blank" rel="noopener" class="project-link-btn" aria-label="GitHub repo">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a href="https://h14-b-cool-cool-cool.vercel.app/" target="_blank" rel="noopener" class="project-link-btn" aria-label="Live demo">
+            <svg viewBox="0 0 10 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l8 5-8 5V1z"/></svg>
+          </a>
+        </div>
+        <div class="project-links" data-project="2">
+          <a href="https://github.com/Hardik-V/OpenAptitude" target="_blank" rel="noopener" class="project-link-btn" aria-label="GitHub repo">
+            <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+          <a href="https://openaptitude.vercel.app/" target="_blank" rel="noopener" class="project-link-btn" aria-label="Live demo">
+            <svg viewBox="0 0 10 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M1 1l8 5-8 5V1z"/></svg>
+          </a>
+        </div>
       </div>
     </div>
 
@@ -94,49 +126,155 @@
       <tr>
         <th><h5>2026</h5><h4>Sentiment Visualiser</h4></th>
         <th><h5>2026</h5><h4>E-Commerce Platform</h4></th>
-        <th><h5>2026</h5><h4>MCP Agent Server</h4></th>
+        <th><h5>2026</h5><h4>OpenLoans</h4></th>
       </tr>
       <tr class="body3">
         <td><span>Three microservices, one star map. Sentiment in, signal out.</span></td>
         <td><span>A storefront engineered like real product infra.</span></td>
-        <td><span>An LLM-ready control plane sitting on top of your API.</span></td>
+        <td><span>Algorithmic strategy simulation meets zero-latency browser physics.</span></td>
       </tr>
       <tr>
         <td><div>Stack:</div><span>Python · AWS · Docker</span></td>
         <td><div>Stack:</div><span>React · Node · PostgreSQL</span></td>
-        <td><div>Stack:</div><span>TS · Node · MCP</span></td>
+        <td><div>Stack:</div><span>Next.js · WEBGL · Zustand</span></td>
       </tr>
       <tr>
         <td><div>Surface:</div><span>Interactive web visualiser</span></td>
         <td><div>Surface:</div><span>Full e-commerce frontend</span></td>
-        <td><div>Surface:</div><span>Tool-calling for AI agents</span></td>
+        <td><div>Surface:</div><span>GPGPU Particle Simulator</span></td>
       </tr>
       <tr>
         <td><div>Backend:</div><span>3 microservices on AWS</span></td>
         <td><div>Backend:</div><span>25+ REST endpoints</span></td>
-        <td><div>Backend:</div><span>Wraps every endpoint as a tool</span></td>
+        <td><div>Backend:</div><span>Deterministic Math Engine</span></td>
       </tr>
       <tr>
         <td><div>Tests:</div><span>Unit + integration</span></td>
         <td><div>Tests:</div><span>93% coverage</span></td>
-        <td><div>Tests:</div><span>Live LLM eval workflow</span></td>
+        <td><div>Tests:</div><span>User Acceptance Loop</span></td>
       </tr>
       <tr>
         <td><div>Recognition:</div><span>Optiver Industry Prize</span></td>
         <td><div>Recognition:</div><span>Director of Studies letter</span></td>
-        <td><div>Recognition:</div><span>Powers the agent demos</span></td>
+        <td><div>Recognition:</div><span>Shipped Under Strict deadline</span></td>
       </tr>
       <tr>
         <td><div>Year:</div><span>Feb–Apr 2026</span></td>
         <td><div>Year:</div><span>Mar–Apr 2026</span></td>
-        <td><div>Year:</div><span>Mar–Apr 2026</span></td>
+        <td><div>Year:</div><span>May-May 2026</span></td>
       </tr>
       <tr>
         <td><div>Repo:</div><span>github.com/Hardik-V/3011_Bravo</span></td>
         <td><div>Repo:</div><span>github.com/nloudev/H14B_CoolCoolCool</span></td>
-        <td><div>Repo:</div><span>Inside the e-commerce repo</span></td>
+        <td><div>Repo:</div><span>github.com/Hardik-V/OpenAptitude</span></td>
       </tr>
     </table>
 
   </div>
 </div>
+
+<style>
+  /*
+   * #product-details has no transform (engine only sets visibility on it).
+   * So position:absolute here moves with the section correctly.
+   * JS computes top/left each rAF as:
+   *   span.getBoundingClientRect() - productDetails.getBoundingClientRect()
+   * to cancel out the translate3d on #product-details-inner.
+   */
+  #project-links-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    pointer-events: auto;
+    z-index: 2;
+    will-change: transform;
+  }
+
+  #project-links-overlay .project-links { display: none; gap: 6px; align-items: center; }
+  #project-links-overlay .project-links.is-active { display: flex; }
+
+  .project-link-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 237, 214, 0.25);
+    background: rgba(255, 237, 214, 0.07);
+    color: rgba(255, 237, 214, 0.6);
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+    flex-shrink: 0;
+    pointer-events: auto;
+  }
+  .project-link-btn:hover {
+    border-color: rgba(255, 237, 214, 0.65);
+    background: rgba(255, 237, 214, 0.14);
+    color: rgba(255, 237, 214, 1);
+  }
+  .project-link-btn svg { width: 12px; height: 12px; }
+
+  @media (max-width: 767.98px) {
+    #project-links-overlay { display: none; }
+  }
+</style>
+
+<script>
+  (function () {
+    var overlay   = document.getElementById('project-links-overlay');
+    var section   = document.getElementById('product-details'); // no transform, stable anchor
+    var titleWrap = document.getElementById('product-details-title-wrapper');
+    var spans     = Array.from(titleWrap.querySelectorAll('span'));
+    var isMobile  = window.matchMedia('(max-width: 767.98px)');
+    var activeIdx = 0;
+
+    function showIcons(index) {
+      activeIdx = index;
+      overlay.querySelectorAll('.project-links').forEach(function (el) {
+        el.classList.toggle('is-active', el.dataset.project === String(index));
+      });
+    }
+
+    function reposition() {
+      var span = spans[activeIdx];
+      if (!span) return;
+
+      var spanR    = span.getBoundingClientRect();
+      var sectionR = section.getBoundingClientRect();
+
+      // span not visible yet (engine hasn't animated it in)
+      if (spanR.width === 0 || spanR.height === 0) return;
+
+      if (isMobile.matches) {
+        // centred below the title
+        var left = spanR.left - sectionR.left + spanR.width / 2;
+        var top  = spanR.bottom - sectionR.top + 8;
+        overlay.style.transform = 'translate(' + left + 'px,' + top + 'px) translateX(-50%)';
+      } else {
+        // vertically centred, right of the title
+        var left = spanR.right - sectionR.left + 10;
+        var top  = spanR.top - sectionR.top + spanR.height / 2;
+        overlay.style.transform = 'translate(' + left + 'px,' + top + 'px) translateY(-50%)';
+      }
+    }
+
+    // Run reposition every frame (engine updates spans every rAF tick)
+    function loop() {
+      reposition();
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+
+    // Watch each span's pointerEvents to detect active index change
+    spans.forEach(function (span, index) {
+      new MutationObserver(function () {
+        if (span.style.pointerEvents === 'auto') showIcons(index);
+      }).observe(span, { attributes: true, attributeFilter: ['style'] });
+    });
+
+    showIcons(0);
+  })();
+</script>

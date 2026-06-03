@@ -3863,7 +3863,7 @@ span.open-weight-article-small {
 #footer-love {
     --grid-column-start: 1;
     --grid-column-span: 3;
-    display: flex;
+    display: none;
     flex-direction: column;
     padding: var(--grid-gap-width);
     border: 1px dashed rgba(255, 237, 215, .2);
