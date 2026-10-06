@@ -10,7 +10,7 @@ interface Props {
 
 const {
   title = "Hardik Verma · Software Engineer",
-  description = "Hardik Verma, software engineer at UNSW. Builds whole products with AI coding agents and ships them: SportLogic Play on the App Store and Google Play, a CCTV design tool for a security integrator, software lead on Sunswift's SR8.",
+  description = "Hardik Verma, software engineer at UNSW. Builds whole products with AI coding agents and ships them: SportLogic Play on the App Store and Google Play, software lead on Sunswift's SR8, Optiver Industry Prize 2026.",
 } = Astro.props;
 ---
 
@@ -39,16 +39,41 @@ const {
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content="/meta/og_image.png" />
+    <meta property="og:image" content="https://hardikv.is-a.dev/meta/og_image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Hardik Verma, software engineer. SportLogic Play on both app stores." />
     <meta property="og:url" content="https://hardikv.is-a.dev/" />
     <meta property="og:site_name" content="Hardik Verma" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="profile" />
+    <meta property="og:locale" content="en_AU" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="/meta/og_image.png" />
+    <meta name="twitter:image" content="https://hardikv.is-a.dev/meta/og_image.png" />
+
+    <link rel="sitemap" href="/sitemap.xml" />
+
+    <!-- Who this page is about, for a search on the name. -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: 'Hardik Verma',
+      url: 'https://hardikv.is-a.dev/',
+      image: 'https://hardikv.is-a.dev/meta/og_image.png',
+      jobTitle: 'Software Engineer',
+      description,
+      affiliation: { '@type': 'CollegeOrUniversity', name: 'UNSW Sydney' },
+      worksFor: { '@type': 'Organization', name: 'SportLogic' },
+      memberOf: { '@type': 'Organization', name: 'Sunswift Racing' },
+      address: { '@type': 'PostalAddress', addressLocality: 'Sydney', addressRegion: 'NSW', addressCountry: 'AU' },
+      email: 'mailto:hardikverma2005@gmail.com',
+      sameAs: ['https://github.com/Hardik-V', 'https://www.linkedin.com/in/v-hardik', 'https://play.sportlogic.com.au/'],
+      knowsAbout: ['TypeScript', 'React', 'Next.js', 'AWS', 'Flutter', 'AI coding agents', 'Model Context Protocol', 'web application security'],
+      award: 'Optiver Industry Prize, UNSW SENG3011, 2026',
+    })} />
 
     <!-- The original bundled engine CSS & JS. Do not edit. -->
     <link rel="stylesheet" href="/scripts/index.css" />
